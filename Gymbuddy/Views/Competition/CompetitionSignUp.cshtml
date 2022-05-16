@@ -1,0 +1,21 @@
+﻿@using Gymbuddy.Entities
+@model CompetingUser
+
+<div>
+    <form asp-action="CompetitionSignUp" asp-controller="Competition" method="post">
+        <input type="hidden" asp-for="username"/>
+        <div class="col-md-3">
+            <label>Bench:</label>
+            <input type="number" asp-for="bench"/>
+        </div>
+        <div class="col-md-3">
+            <label>Deadlift:</label>
+            <input type="number" asp-for="deadlift"/>
+        </div>
+        <div class="col-md-3">
+            <label>Squat:</label>
+            <input type="number" asp-for="squat"/>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>

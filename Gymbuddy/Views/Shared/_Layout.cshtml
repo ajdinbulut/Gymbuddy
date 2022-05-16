@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gymbuddy</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Gymbuddy.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tapestry&display=swap" rel="stylesheet">
+    <style>
+    
+        #login{
+            background-color:#04042E;
+            border:1px solid;
+            color:grey;
+            margin-right:5px;
+        }
+       #register{
+            background-color:#04042E;
+            border:1px solid;
+            color:grey;
+        }
+        #logout{
+            background-color:#04042E;
+            border:1px solid;
+            color:grey;
+            
+        }
+        #logout:hover{
+            border-color:#9090D2;
+            color:white;
+            box-shadow:0 0.5em 0.5em -0.4em #9090D2;
+            transform:translateY(-0.10em);
+        }
+        
+        #login:hover{
+            border-color:#9090D2;
+            color:white;
+            box-shadow:0 0.5em 0.5em -0.4em #9090D2;
+            transform:translateY(-0.10em);
+        }
+        #register:hover{
+            border-color:#9090D2;
+            color:white;
+            box-shadow:0 0.5em 0.5em -0.4em #9090D2;
+            transform:translateY(-0.10em);
+        }
+        #dropdown{
+            margin-right:10px;
+        }
+        .dropdown-menu li {
+position: relative;
+}
+.dropdown-menu .dropdown-submenu {
+display: none;
+position: absolute;
+left: 100%;
+top: -7px;
+}
+.dropdown-menu .dropdown-submenu-left {
+right: 100%;
+left: auto;
+}
+.dropdown-menu > li:hover > .dropdown-submenu {
+display: block;
+}
+    </style>
+</head>
+<body class="bg-black">
+    <header>
+       <nav class="navbar navbar-expand-lg navbar-dark bg-dark flex-wrap flex-md-nowrap" >
+           <div class="container-fluid">
+             <a class="navbar-brand" asp-action="Index" asp-controller="Home">GymBuddy</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                 <span class="navbar-toggler-icon"></span>
+              </button>
+         <div class="collapse navbar-collapse" >
+             <ul class="navbar-nav">
+               <li class="nav-item">
+                 <a class="nav-link" asp-action="Index" asp-controller="Home">Home</a>
+               </li>
+               
+        @if (Context.Session.GetString("loggedUser") != null)
+                {
+         <ul class="navbar-nav">
+             <li class="nav-item">
+            <a class="nav-link" asp-action="Index" asp-controller="Competition">Competition</a>
+             </li>
+         </ul> 
+                }
+        </ul>
+        
+    </div>
+ @if(Context.Session.GetString("loggedUser") != null)
+                    {                         
+                           
+                               <div class="dropdown">
+  <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
+    data-bs-toggle="dropdown"  aria-expanded="false">User</button>
+  <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
+    <li>
+        <a class="dropdown-item" asp-action="Index" asp-controller="Profile">My Profile &raquo;</a>
+    </li>      
+    <li>
+      <a class="dropdown-item">
+        Settings &raquo;
+      </a>
+      
+      <ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
+        <li>
+          <a class="dropdown-item"  asp-action="EditPW" asp-controller="Profile">Change password</a>
+        </li>
+        
+        </ul>
+        
+        <li>
+      <a class="dropdown-item" asp-action="Logout" asp-controller="Home">Logout</a>
+    </li>
+        </ul>
+        </div>
+                           }
+else{
+                        
+   <div class="collapse navbar-collapse justify-content-end" >
+        <a asp-action="Login" asp-controller="Home"><button type="button" id="login">Login</button></a>
+        <a asp-action="Register" asp-controller="Home"><button type="button" id="register">Register</button></a>
+   </div>
+}
+     </div>
+       </nav>
+    </header>
+    
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+                                    
+            &copy; 2022 - Gymbuddy 
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

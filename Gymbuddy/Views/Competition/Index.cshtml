@@ -1,0 +1,46 @@
+﻿@using Gymbuddy.Entities
+@using Gymbuddy.ViewModels
+@model List<CompetingUser>
+<style>
+#tablet{
+    border:2px solid #303030 ;
+    margin-top:10px;
+}
+th,td{
+    color:white;
+}
+</style>
+@if(Context.Session.GetString("loggedUser") != null)
+{
+    <a class="btn btn-dark" style="margin-top:10px"asp-action="CompetitionSignUp" asp-controller="Competition">Sign Up</a>
+}
+@if(TempData["fail"] != null)
+{
+    <p>>@TempData["fail"]</p>
+}
+<table id="tablet" class="table table-hover">
+    <thead>
+        <tr >
+            <th>#</th>
+            <th>Username</th>
+            <th><a asp-action="SortBench" asp-controller="Competition">Bench</a></th>
+            <th><a asp-action="SortDeadlift" asp-controller="Competition">Deadlift</a></th>
+            <th><a asp-action="SortSquat" asp-controller="Competition">Squat</a></th>
+            <th><a asp-action="SortTotal" asp-controller="Competition">Total</a></th>
+        </tr>
+        <tbody>
+             
+                @foreach(var user in Model)
+                {<tr>
+                  <td></td>
+                  <td>@user.username</td>
+                  <td>@user.bench</td>
+                  <td>@user.deadlift</td>
+                  <td>@user.squat</td>
+                  <td>@user.total</td>
+                </tr>
+                }
+            
+        </tbody>
+    </thead>
+</table>

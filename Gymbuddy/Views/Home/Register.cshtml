@@ -1,0 +1,218 @@
+﻿@using Gymbuddy.ViewModels
+@model RegisterViewModel
+<style>
+    body{
+    background-color: rgb(27, 32, 36);
+}
+#container{
+    width: 40%;
+    height: 750px;
+    background-color: rgb(25, 25, 25);
+    margin: auto;
+    margin-top:80px;
+    box-shadow: 30px 30px 30px rgb(0   , 0, 0);
+    font-size: 30px;
+    border-radius: 20px;
+}   
+#log{
+    font-size: 0.8em;
+    width: fit-content;
+    margin: auto;
+    padding-top: 50px;
+    color: white;
+    font-weight:lighter;
+}
+#userName{
+    width: 100%;
+    height: 100px;
+    margin-top: 5px;
+}
+#name input[type="text"]{
+    width: 50%;
+    height: 80px;
+    font-size: 0.8em;
+    margin-left: 25%;
+    margin-top: 4%;
+    border-radius: 2em;
+    border:3px solid #3498db;
+    text-align: center;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    color: white;
+
+}
+#userName input[type="text"]{
+    width: 50%;
+    height: 80px;
+    font-size: 0.8em;
+    margin-left: 25%;
+    margin-top: 4%;
+    border-radius: 2em;
+    border:3px solid #3498db;
+    text-align: center;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    color: white;
+
+}
+#password input[type="password"]{
+    width: 50%;
+    color: white;
+    height: 80px;
+    font-size: 0.8em;
+    margin-left: 25%;
+    margin-top: 4%;
+    border-radius: 2em;
+    border:3px solid #3498db;
+    font-weight: 600;
+    text-align: center;
+    background-color: rgb(25, 25, 25);
+
+}
+#age input[type="number"]{
+    width: 50%;
+    height: 80px;
+    font-size: 0.8em;
+    margin-left: 25%;
+    margin-top: 4%;
+    border-radius: 2em;
+    border:3px solid #3498db;
+    text-align: center;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    color: white;
+
+}
+#email input[type="email"]{
+    width: 50%;
+    height: 80px;
+    font-size: 0.8em;
+    margin-left: 25%;
+    margin-top: 4%;
+    border-radius: 2em;
+    border:3px solid #3498db;
+    text-align: center;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    color: white;
+
+}
+#button{
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+#btn{
+    font-size: 0.8em;
+    width: 50%;
+    height: 60px;
+    margin-left: 25%;
+    margin-right: 25%;
+    border:4px solid #2ecc71;
+    border-radius: 1em;
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
+#name input[type="text"]:hover{
+    box-shadow: 7px 7px 7px #000000;
+    opacity: 0.8;
+}
+#userName input[type="text"]:hover{
+    box-shadow: 7px 7px 7px #000000;
+    opacity: 0.8;
+}
+#password input[type="password"]:hover{
+    box-shadow: 7px 7px 7px #000000;
+    opacity: 0.8;
+}
+#age input[type="number"]:hover{
+    box-shadow: 7px 7px 7px #000000;
+    opacity: 0.8;
+}
+#email input[type="email"]:hover{
+    box-shadow: 7px 7px 7px #000000;
+    opacity: 0.8;
+}
+button:hover{
+    box-shadow: 7px 7px 7px #000000;
+    opacity: 0.8;
+}
+media only screen and (max-width:600px) {
+    body, html{
+        width: 100%;
+        height: 100%;
+        background-color: rgb(25, 25, 25);
+
+    }
+#container{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding-top: 50px;
+    }
+#name input[type="text"]{
+        width: 80%;
+        margin-left: 10%;
+        margin-right: 10%;
+}
+#userName input[type="text"]{
+        width: 80%;
+        margin-left: 10%;
+        margin-right: 10%;
+}
+#password input[type="password"]{
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+#age input[type="number"]{
+        width: 80%;
+        margin-left: 10%;
+        margin-right: 10%;
+}
+#email input[type="email"]{
+        width: 80%;
+        margin-left: 10%;
+        margin-right: 10%;
+}
+
+#btn{
+    width: fit-content;
+    margin-left: 10%;
+    margin-right: 10%;
+
+}
+}
+</style></>
+<div id="container">
+        <div id="log">
+            <h1 style="font-family: 'Tapestry';     letter-spacing: 10px;">Register</h1>
+        </div>
+        <form asp-action="Register" asp-controller="Home" method="post">
+            <div id="name">
+                <input type="text" asp-for="@Model.name" placeholder="Name">
+            </div>
+            <div id="userName">
+                <input type="text" asp-for="@Model.username" placeholder="Username">
+            </div>
+            <div id="password">
+                <input type="password" asp-for="@Model.password" placeholder="Password">
+            </div>
+            <div id="age">
+                <input type="number" asp-for="@Model.age" placeholder="Age">
+            </div>
+            <div id="email">
+                <input type="email" asp-for="@Model.email" placeholder="Email">
+            </div>
+            <div id="button">
+                <button id="btn">Register</button>
+            </div>
+        </form>
+
+    </div>
+
+@if(TempData["failed"] != null){
+   <div style="inline-block">
+       <p class="alert alert-danger" style="text-align:center;width:300px;margin:auto;margin-top:10px">@TempData["failed"]</p>
+   </div>
+};
