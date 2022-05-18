@@ -21,22 +21,7 @@ namespace Gymbuddy.Controllers
             }
             ;
         }
-        public IActionResult EditUN()
-        {
-            var modelAsJson = HttpContext.Session.GetString("loggedUser");
-            var model = JsonConvert.DeserializeObject<User>(modelAsJson);
-            return View(model);
-        }
-        [HttpPost]
-        public IActionResult EditUN(string username,int id)
-        {
-            GymDB db = new GymDB();
-            var model = db.Users.Find(id);
-            model.username = username;
-            db.Users.Update(model);
-            db.SaveChanges();
-            return RedirectToAction("Index", "Home");
-        }
+        
         public IActionResult EditPW()
         {
             var modelAsJson = HttpContext.Session.GetString("loggedUser");

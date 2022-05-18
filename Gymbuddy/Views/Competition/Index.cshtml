@@ -23,17 +23,17 @@ th,td{
         <tr >
             <th>#</th>
             <th>Username</th>
-            <th><a asp-action="SortBench" asp-controller="Competition">Bench</a></th>
-            <th><a asp-action="SortDeadlift" asp-controller="Competition">Deadlift</a></th>
-            <th><a asp-action="SortSquat" asp-controller="Competition">Squat</a></th>
-            <th><a asp-action="SortTotal" asp-controller="Competition">Total</a></th>
+            <th><a asp-action="SortBench" asp-controller="Competition" style="text-decoration:none;">Bench</a></th>
+            <th><a asp-action="SortDeadlift" asp-controller="Competition" style="text-decoration:none;">Deadlift</a></th>
+            <th><a asp-action="SortSquat" asp-controller="Competition" style="text-decoration:none;">Squat</a></th>
+            <th><a asp-action="SortTotal" asp-controller="Competition" style="text-decoration:none;">Total</a></th>
         </tr>
         <tbody>
              
                 @foreach(var user in Model)
                 {<tr>
                   <td></td>
-                  <td>@user.username</td>
+                  <td><a asp-action="Details" asp-controller="Home" asp-route-id="@user.UserId">@user.username</a></td>
                   <td>@user.bench</td>
                   <td>@user.deadlift</td>
                   <td>@user.squat</td>

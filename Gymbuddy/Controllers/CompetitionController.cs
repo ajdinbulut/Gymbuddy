@@ -23,15 +23,18 @@ namespace Gymbuddy.Controllers
         }
         public IActionResult CompetitionSignUp()
         {
+            GymDB db = new GymDB();
             var modelAsJson = HttpContext.Session.GetString("loggedUser");
             var user = JsonConvert.DeserializeObject<CompetingUser>(modelAsJson);
+           
+
             return View(user);
         }
         [HttpPost]
         public IActionResult CompetitionSignUp(CompetingUser user)
         {
             GymDB db = new GymDB();
-            var getId = db.Users.FirstOrDefault(x => x.username == user.username);
+            var getId = db.Users.FirstOrDefault(x=>x.username == user.username);
             CompetingUser model = new CompetingUser();
             model.username = user.username;
             model.bench = user.bench;

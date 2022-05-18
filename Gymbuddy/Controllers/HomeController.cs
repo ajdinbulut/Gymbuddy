@@ -31,6 +31,12 @@ namespace Gymbuddy.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        public IActionResult Details(int id)
+        {
+            GymDB db = new GymDB();
+            var user = db.Users.Find(id);
+            return View(user);
+        }
         public IActionResult Register()
         {
             return View();
