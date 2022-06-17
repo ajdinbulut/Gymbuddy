@@ -13,7 +13,7 @@ namespace Gymbuddy.Controllers
             if (HttpContext.Session.GetString("loggedUser") != null)
             {
                 GymDB db = new GymDB();
-                var user = db.CompetingUser.OrderByDescending(x => x.total).ToList();
+                var user = db.CompetingUsers.OrderByDescending(x => x.total).ToList();
                 return View(user);
             }
             else
@@ -43,11 +43,11 @@ namespace Gymbuddy.Controllers
             model.total = user.squat + user.bench + user.deadlift;
             model.UserId = getId.Id;
 
-            var check = db.CompetingUser.FirstOrDefault(x => x.username == user.username);
+            var check = db.CompetingUsers.FirstOrDefault(x => x.username == user.username);
             if (check == null)
             {
 
-                db.CompetingUser.Add(model);
+                db.CompetingUsers.Add(model);
                 db.SaveChanges();
                 return RedirectToAction("Index");
 
@@ -62,25 +62,25 @@ namespace Gymbuddy.Controllers
         public IActionResult SortBench()
         {
             GymDB db = new GymDB();
-            var user = db.CompetingUser.OrderByDescending(x => x.bench).ToList();
+            var user = db.CompetingUsers.OrderByDescending(x => x.bench).ToList();
             return View("Index",user);
         }
         public IActionResult SortDeadlift()
         {
             GymDB db = new GymDB();
-            var user = db.CompetingUser.OrderByDescending(x => x.deadlift).ToList();
+            var user = db.CompetingUsers.OrderByDescending(x => x.deadlift).ToList();
             return View("Index", user);
         }
         public IActionResult SortSquat()
         {
             GymDB db = new GymDB();
-            var user = db.CompetingUser.OrderByDescending(x => x.squat).ToList();
+            var user = db.CompetingUsers.OrderByDescending(x => x.squat).ToList();
             return View("Index", user);
         }
         public IActionResult SortTotal()
         {
             GymDB db = new GymDB();
-            var user = db.CompetingUser.OrderByDescending(x => x.total).ToList();
+            var user = db.CompetingUsers.OrderByDescending(x => x.total).ToList();
             return View("Index", user);
         }
     }

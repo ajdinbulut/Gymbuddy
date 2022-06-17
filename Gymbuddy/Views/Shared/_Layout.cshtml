@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Gymbuddy.Entities
+@using Newtonsoft.Json
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -92,10 +94,24 @@ display: block;
             <a class="nav-link" asp-action="Index" asp-controller="Competition">Competition</a>
              </li>
          </ul> 
+                            {
+                                GymDB db = new GymDB();
+                                var user = JsonConvert.DeserializeObject<User>(Context.Session.GetString("loggedUser"));
+                                var userRole = db.UserRoles.FirstOrDefault(x => x.UserId == user.Id);
+                                var role = db.Roles.FirstOrDefault(x => x.Id == userRole.RoleId);
+                                if(role.Name == "Admin")
+                                {
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item">
+                                             <a class="nav-link" asp-action="Index" asp-controller="Administration">Administration</a>
+                                         </li>
+                                    </ul> 
+                                }
+                            }
                 }
         </ul>
-        
-    </div>
+                    
+                </div>
  @if(Context.Session.GetString("loggedUser") != null)
                     {                         
                            

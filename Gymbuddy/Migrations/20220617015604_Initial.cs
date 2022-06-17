@@ -10,6 +10,33 @@ namespace Gymbuddy.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -27,7 +54,7 @@ namespace Gymbuddy.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompetingUser",
+                name: "CompetingUsers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -41,9 +68,9 @@ namespace Gymbuddy.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompetingUser", x => x.Id);
+                    table.PrimaryKey("PK_CompetingUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompetingUser_Users_UserId",
+                        name: "FK_CompetingUsers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -51,15 +78,21 @@ namespace Gymbuddy.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompetingUser_UserId",
-                table: "CompetingUser",
+                name: "IX_CompetingUsers_UserId",
+                table: "CompetingUsers",
                 column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CompetingUser");
+                name: "CompetingUsers");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "UserRoles");
 
             migrationBuilder.DropTable(
                 name: "Users");
