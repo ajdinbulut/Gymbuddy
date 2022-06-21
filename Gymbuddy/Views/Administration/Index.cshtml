@@ -17,12 +17,13 @@
             <td>@mod.Name</td>
             <td>@mod.Username</td>
             <td>@mod.Age</td>
-            @foreach(var item in @mod.UserRoles)
+           <td> @foreach(var item in @mod.UserRoles)
                     {
                          GymDB db = new GymDB();
                     var role = db.Roles.Find(item.RoleId);
-                    <td>@role.Name</td>
+                    <span>@role.Name </span>
                     }
+            </td>
            <td><a class="btn btn-primary" asp-action="EditAcc" asp-controller="Administration" asp-route-id="@mod.Id">Edit</a></td>
            <td><a class="btn btn-danger" asp-action="DeleteAcc" asp-controller="Administration" asp-route-id="@mod.Id">Delete</a></td>
             
