@@ -1,0 +1,40 @@
+﻿@using Gymbuddy.ViewModels
+@model EditAccViewModel
+@{
+    GymDB db = new GymDB();
+    var role = db.Roles.ToList();
+}
+<form asp-action="EditAcc" asp-controller="Administration" method="post">
+    
+        <input type="hidden" name="id" class="form-control" value="@Model.Id"/>
+   
+    <div class="col-md-2">
+        <input type="text" name="Name" class="form-control" value="@Model.Name" />
+    </div>
+    <div class="col-md-2">
+        <input type="text" name="Username" class="form-control" value="@Model.Username"/>
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="Age" class="form-control" value="@Model.Age"/>
+    </div>
+    <div class="col-md-2">
+        <input type="text" name="Password" class="form-control" value="@Model.password"/>
+    </div>
+    <div class="col-md-2">
+        <input type="email" name="Email" class="form-control" value="@Model.email"/>
+    </div>
+    
+    @foreach(var item in role)
+    {
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="RoleID" name="RoleID" value="@item.Id">
+        <label class="form-check-label" for="RoleID">
+            @item.Id
+        </label>
+        </div>
+    }
+
+   
+ 
+    <button type="submit" >Submit</button>
+</form>

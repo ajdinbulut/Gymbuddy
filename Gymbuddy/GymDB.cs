@@ -9,6 +9,7 @@ namespace Gymbuddy
         public DbSet<CompetingUser> CompetingUsers { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<UserCountry> UserCountries { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseNpgsql("Host=localhost;Database=GymBuddy;Username=postgres;Password=postgres");

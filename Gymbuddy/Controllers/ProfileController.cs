@@ -15,9 +15,19 @@ namespace Gymbuddy.Controllers
             }
             else
             {
+                GymDB db = new GymDB();
                 var modelAsJson = HttpContext.Session.GetString("loggedUser");
                 var model = JsonConvert.DeserializeObject<User>(modelAsJson);
-                return View(model);
+                var userCountry = db.UserCountries.FirstOrDefault(x => x.UserId == model.Id);
+                UserCountryViewModel userCountryVM = new UserCountryViewModel()
+                {
+                    UserName = model.Name,
+                    username = model.username,
+                    email = model.email,
+                    age = model.age,
+                    CountryName = userCountry.Name
+                };
+                return View(userCountryVM);
             }
             ;
         }
@@ -39,5 +49,24 @@ namespace Gymbuddy.Controllers
             return RedirectToAction("Index", "Home");
         }
       
+        public IActionResult AddCountry()
+        {
+            
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddCountry(string Name)
+        {
+            GymDB db = new GymDB();
+            var modelAsJson = HttpContext.Session.GetString("loggedUser");
+            var model = JsonConvert.DeserializeObject<User>(modelAsJson);
+            var user = db.Users.Find(model.Id);
+            UserCountry userCountry = new UserCountry();
+            userCountry.Name = Name;
+            userCountry.UserId = user.Id;
+            db.UserCountries.Add(userCountry);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }

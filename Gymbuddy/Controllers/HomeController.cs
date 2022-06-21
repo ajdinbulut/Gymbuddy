@@ -47,7 +47,7 @@ namespace Gymbuddy.Controllers
             GymDB db = new GymDB();
             User model = new User();
             UserRole userRole = new UserRole();
-            var roleId = db.Roles.FirstOrDefault(x => x.Name == "User");
+            var role = db.Roles.FirstOrDefault(x => x.Name == "User");
             var user = db.Users.FirstOrDefault(u => u.username == mod.username || u.email == mod.email);
 
             if (user != null)
@@ -64,7 +64,7 @@ namespace Gymbuddy.Controllers
             db.Users.Add(model);
             db.SaveChanges();
             userRole.UserId = model.Id;
-            userRole.RoleId = roleId.Id;
+            userRole.RoleId = role.Id;
             db.UserRoles.Add(userRole);
             db.SaveChanges();
             TempData["success"] = "Thank you for registering!";
