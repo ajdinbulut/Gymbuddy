@@ -1,5 +1,7 @@
-﻿using Gymbuddy.Entities;
+﻿using Gymbuddy.Core.Entities;
+using Gymbuddy.Infrastructure;
 using Gymbuddy.ViewModels;
+using GymBuddy.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -7,6 +9,12 @@ namespace Gymbuddy.Controllers
 {
     public class ProfileController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ProfileController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
         public IActionResult Index()
         {
             if (HttpContext.Session.GetString("loggedUser") == null)
@@ -15,10 +23,9 @@ namespace Gymbuddy.Controllers
             }
             else
             {
-                GymDB db = new GymDB();
                 var modelAsJson = HttpContext.Session.GetString("loggedUser");
                 var model = JsonConvert.DeserializeObject<User>(modelAsJson);
-                var userCountry = db.UserCountries.FirstOrDefault(x => x.UserId == model.Id);
+                var userCountry = _unitOfWork.UserCountry.GetFirstOrDefault(x => x.UserId == model.Id);
                 UserCountryViewModel userCountryVM = new UserCountryViewModel()
                 {
                     UserName = model.Name,
@@ -41,11 +48,10 @@ namespace Gymbuddy.Controllers
         [HttpPost]
         public IActionResult EditPW(string password, int id)
         {
-            GymDB db = new GymDB();
-            var model = db.Users.Find(id);
+            var model = _unitOfWork.User.GetFirstOrDefault(u=>u.Id == id);
             model.password = password;
-            db.Users.Update(model);
-            db.SaveChanges();
+            _unitOfWork.User.Update(model);
+            _unitOfWork.Save();
             return RedirectToAction("Index", "Home");
         }
       
@@ -57,15 +63,14 @@ namespace Gymbuddy.Controllers
         [HttpPost]
         public IActionResult AddCountry(string Name)
         {
-            GymDB db = new GymDB();
             var modelAsJson = HttpContext.Session.GetString("loggedUser");
             var model = JsonConvert.DeserializeObject<User>(modelAsJson);
-            var user = db.Users.Find(model.Id);
+            var user = _unitOfWork.User.GetFirstOrDefault(u => u.Id == model.Id);
             UserCountry userCountry = new UserCountry();
             userCountry.Name = Name;
             userCountry.UserId = user.Id;
-            db.UserCountries.Add(userCountry);
-            db.SaveChanges();
+            _unitOfWork.UserCountry.Add(userCountry);
+            _unitOfWork.Save();
             return RedirectToAction("Index");
         }
     }

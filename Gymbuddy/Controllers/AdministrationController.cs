@@ -1,5 +1,7 @@
-﻿using Gymbuddy.Entities;
+﻿using Gymbuddy.Core.Entities;
+using Gymbuddy.Infrastructure;
 using Gymbuddy.ViewModels;
+using GymBuddy.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -8,37 +10,44 @@ namespace Gymbuddy.Controllers
 {
     public class AdministrationController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly GymDB _db;
+
+        public AdministrationController(IUnitOfWork unitOfWork, GymDB db)
+        {
+            _unitOfWork = unitOfWork;
+            _db = db;   
+        }
         public IActionResult Index()
         {
-            GymDB db = new GymDB();
-            var user = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("loggedUser"));
-            var userRole = db.UserRoles.FirstOrDefault(x => x.UserId == user.Id);
-            var role = db.Roles.FirstOrDefault(x => x.Id == userRole.RoleId);
-            if (role.Name != "Admin")
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            //var user = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("loggedUser"));
+            //var userRole = _unitOfWork.UserRole.GetFirstOrDefault(x => x.UserId == user.Id);
+            //var role = _unitOfWork.Role.GetFirstOrDefault(x => x.Id == userRole.RoleId);
+            ////if (role.Name != "Admin")
+            ////{
+            ////    return RedirectToAction("Index", "Home");
+            ////}
             List<AdministrationViewModel> AdministrationVM = new List<AdministrationViewModel>();
-            var users = db.Users.Include(x=>x.UserRoles).ToList();
+            var users = _unitOfWork.User.GetAll(includeProperties: "UserRoles,Roles");
             foreach (var items in users)
             {
                 AdministrationViewModel obj = new AdministrationViewModel();
-                
+
                 obj.Id = items.Id;
                 obj.Name = items.Name;
                 obj.Age = items.age;
                 obj.Username = items.username;
                 obj.UserRoles = items.UserRoles;
+                obj.Roles = items.Roles;
                 AdministrationVM.Add(obj);
             }
             return View(AdministrationVM);
         }
         public IActionResult EditAcc(int id)
         {
-            GymDB db = new GymDB();
-            var user = db.Users.Find(id);
-            var userID = db.UserRoles.FirstOrDefault(x => x.UserId == id);
-            var roleID = db.Roles.FirstOrDefault(x => x.Id == userID.RoleId);
+            var user = _unitOfWork.User.GetFirstOrDefault(u => u.Id == id);
+            var userID = _unitOfWork.UserRole.GetFirstOrDefault(x => x.UserId == id);
+            var roleID = _unitOfWork.Role.GetFirstOrDefault(x => x.Id == userID.RoleId);
             EditAccViewModel editAcc = new EditAccViewModel();
             editAcc.Id = user.Id;
             editAcc.Name = user.Name;
@@ -52,9 +61,8 @@ namespace Gymbuddy.Controllers
         [HttpPost]
         public IActionResult EditAcc(EditAccViewModel editAcc)
         {
-            GymDB db = new GymDB();
             UserRole userRole = new UserRole();
-            var user = db.Users.Find(editAcc.Id);
+            var user = _unitOfWork.User.GetFirstOrDefault(u=>u.Id== editAcc.Id);
             user.Name = editAcc.Name;
             user.username = editAcc.Username;
             user.age = editAcc.Age;
@@ -62,11 +70,18 @@ namespace Gymbuddy.Controllers
             user.email = editAcc.email;
             userRole.UserId = editAcc.Id;
             userRole.RoleId = editAcc.RoleID;
-            if (!db.UserRoles.Any(x => x.UserId == editAcc.Id && x.RoleId == editAcc.RoleID))
+            if (!_db.UserRoles.Any(x => x.UserId == editAcc.Id && x.RoleId == editAcc.RoleID))
             {
-                db.UserRoles.Add(userRole);
+                _unitOfWork.UserRole.Add(userRole);
             }
-            db.SaveChanges();
+            _unitOfWork.Save();
+            return RedirectToAction("Index");
+        }
+        public IActionResult DeleteAcc(int id)
+        {
+            var user = _unitOfWork.User.GetFirstOrDefault(u => u.Id == id);
+            _unitOfWork.User.Remove(user);
+            _unitOfWork.Save();
             return RedirectToAction("Index");
         }
     }

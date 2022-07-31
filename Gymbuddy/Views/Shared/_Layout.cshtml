@@ -1,4 +1,5 @@
-﻿@using Gymbuddy.Entities
+﻿@using Gymbuddy.Core.Entities
+@using Gymbuddy.Infrastructure
 @using Newtonsoft.Json
 <!DOCTYPE html>
 <html lang="en">
@@ -94,7 +95,10 @@ display: block;
             <a class="nav-link" asp-action="Index" asp-controller="Competition">Competition</a>
              </li>
                             </ul>
-                            {
+                             <li class="nav-item">
+                                             <a class="nav-link" asp-action="Index" asp-controller="Administration">Administration</a>
+                                         </li>
+                           @* {
                                 GymDB db = new GymDB();
                                 var user = JsonConvert.DeserializeObject<User>(Context.Session.GetString("loggedUser"));
                                 var role = db.Roles.FirstOrDefault(x => x.Name == "Admin");
@@ -107,7 +111,7 @@ display: block;
                                          </li>
                                     </ul> 
                                 }
-                            }
+                            }*@
                 }
         </ul>
                     

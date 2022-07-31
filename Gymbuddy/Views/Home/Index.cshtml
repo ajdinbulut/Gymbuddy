@@ -1,5 +1,15 @@
-﻿
- @if(TempData["success"] != null){
+﻿@using GymBuddy.Core.Entities
+@using Gymbuddy.ViewModels
+@model IEnumerable<Post>
+@if(TempData["success"] != null){
        <h2>@TempData["success"]</h2>
 }
 
+    <hr />
+    <div>
+    @foreach(var post in Model)
+    {
+        <p>Hello @post.User.Name</p>
+    }
+</div>
+}

@@ -1,4 +1,4 @@
-﻿using Gymbuddy.Entities;
+﻿using Gymbuddy.Core.Entities;
 
 namespace Gymbuddy.ViewModels
 {

@@ -1,0 +1,19 @@
+﻿@using Gymbuddy.ViewModels
+@model PostViewModel
+@if (Context.Session.GetString("loggedUser") != null)
+{
+    <form asp-action="Post" asp-controller="Home" method="post" enctype="multipart/form-data">
+        <div class="border p-3 mt-4">
+            <input type="hidden" name="id" />
+            <div class="col-md-3 mb-2 ">
+                <textarea asp-for="Post.Description" placeholder="Enter a description of your post.." class="form-control"></textarea> 
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Post.ImageUrl"></label>
+                <input type="file" name="file" placeholder="Select an image.." class="form-control"/>
+            </div>
+                    <button type="submit" class="btn btn-light">Submit</button>
+
+        </div>
+    </form>
+}

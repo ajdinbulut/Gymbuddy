@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Gymbuddy.Entities
+namespace Gymbuddy.Core.Entities
 {
     public class CompetingUser
     {   
