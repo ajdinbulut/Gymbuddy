@@ -1,15 +1,35 @@
 ﻿@using GymBuddy.Core.Entities
 @using Gymbuddy.ViewModels
 @model IEnumerable<Post>
+<style>
+    #postId{
+        width:auto;
+        height:auto;
+        border:solid 3px white;
+        margin-bottom:3px;
+    }
+    img{
+        width:50%;
+        height:50%;
+        margin-left:5px;
+    }
+    p{
+        margin-left:5px;
+    }
+</style>
 @if(TempData["success"] != null){
        <h2>@TempData["success"]</h2>
 }
 
     <hr />
-    <div>
-    @foreach(var post in Model)
-    {
-        <p>Hello @post.User.Name</p>
+    <a asp-action="Post" asp-controller="Home" class="btn btn-primary">Post</a>
+   
+    @foreach(var post in Model){
+        <div id="postId">
+            <h3>@post.User.Name</h3>
+            <p>@post.Description</p>
+            <img src="@post.ImageUrl">
+            <br />
+        </div>
     }
-</div>
-}
+

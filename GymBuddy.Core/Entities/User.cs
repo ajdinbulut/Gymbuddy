@@ -12,7 +12,6 @@ namespace Gymbuddy.Core.Entities
         public int age { get; set; }
         public string email { get; set; }
         public List<UserRole> UserRoles { get; set; }
-        public List<Role> Roles { get; set; }
 
     }
 }

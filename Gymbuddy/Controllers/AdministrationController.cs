@@ -28,20 +28,20 @@ namespace Gymbuddy.Controllers
             ////    return RedirectToAction("Index", "Home");
             ////}
             List<AdministrationViewModel> AdministrationVM = new List<AdministrationViewModel>();
-            var users = _unitOfWork.User.GetAll(includeProperties: "UserRoles,Roles");
-            foreach (var items in users)
-            {
-                AdministrationViewModel obj = new AdministrationViewModel();
+            var users = _unitOfWork.User.GetAll(includeProperties:"UserRole");
+            //foreach (var items in users)
+            //{
+            //    AdministrationViewModel obj = new AdministrationViewModel();
 
-                obj.Id = items.Id;
-                obj.Name = items.Name;
-                obj.Age = items.age;
-                obj.Username = items.username;
-                obj.UserRoles = items.UserRoles;
-                obj.Roles = items.Roles;
-                AdministrationVM.Add(obj);
-            }
-            return View(AdministrationVM);
+            //    obj.Id = items.Id;
+            //    obj.Name = items.Name;
+            //    obj.Age = items.age;
+            //    obj.Username = items.username;
+            //    obj.UserRoles = items.UserRoles;
+            //    obj.Roles = items.Roles;
+            //    AdministrationVM.Add(obj);
+            //}
+            return View(users);
         }
         public IActionResult EditAcc(int id)
         {

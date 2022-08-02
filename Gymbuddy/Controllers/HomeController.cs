@@ -25,9 +25,7 @@ namespace Gymbuddy.Controllers
 
         public IActionResult Index()
         {
-            var posts = _unitOfWork.Post.GetAll();
-            PostViewModel post = new PostViewModel();
-           
+            var posts = _unitOfWork.Post.GetAll(includeProperties:"User");           
             return View(posts);
         }
 

@@ -11,8 +11,6 @@ namespace Gymbuddy.Core.Entities
         public int deadlift { get; set; }
         public int squat { get; set; }
         public int total { get; set; }  
-       [Required]
-       [ForeignKey("Users")]
         public int UserId { get; set; }
         public virtual User Users { get; set; }
     }
