@@ -1,7 +1,7 @@
 ﻿@using Gymbuddy.Core.Entities
 @using Gymbuddy.Infrastructure
 @using Gymbuddy.ViewModels
-@model IEnumerable<User>
+@model IEnumerable<AdministrationViewModel>
  <table class="table table-hover">
     <thead>
         <tr>
@@ -16,19 +16,13 @@
       {
         <tr>
             <td>@mod.Name</td>
-            <td>@mod.username</td>
-            <td>@mod.age</td>
-                <td>
-                    @foreach(var item in @mod.UserRoles)
-                        {
-
-                        
+            <td>@mod.Username</td>
+            <td>@mod.Age</td>
+                <td>@foreach(var item in mod.UserRoles)
+                    {
                         <span>@item.Role.Name</span>
-                    
-                    }
-
-           </td>
-           <td><a class="btn btn-primary" asp-action="EditAcc" asp-controller="Administration" asp-route-id="@mod.Id">Edit</a></td>
+                    }</td>
+                <td><a class="btn btn-primary" asp-action="EditAcc" asp-controller="Administration" asp-route-id="@mod.Id">Edit</a></td>
            <td><a class="btn btn-danger" asp-action="DeleteAcc" asp-controller="Administration" asp-route-id="@mod.Id">Delete</a></td>
             
         </tr>

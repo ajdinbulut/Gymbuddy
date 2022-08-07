@@ -2,6 +2,7 @@
 using Gymbuddy.Infrastructure;
 using Gymbuddy.ViewModels;
 using GymBuddy.Infrastructure.UnitOfWork;
+using GymBuddy.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -17,14 +18,15 @@ namespace Gymbuddy.Controllers
         }
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("loggedUser") == null)
+            if (HttpContext?.Session.GetString("loggedUser") == null)
             {
                 return RedirectToAction("Login", "Home");
             }
             else
             {
-                var modelAsJson = HttpContext.Session.GetString("loggedUser");
-                var model = JsonConvert.DeserializeObject<User>(modelAsJson);
+
+                var modelasJson = HttpContext?.Session.GetString("loggedUser");
+                var model = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString(modelasJson));
                 var userCountry = _unitOfWork.UserCountry.GetFirstOrDefault(x => x.UserId == model.Id);
                 UserCountryViewModel userCountryVM = new UserCountryViewModel()
                 {

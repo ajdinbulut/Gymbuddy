@@ -1,6 +1,8 @@
-﻿@using Gymbuddy.Core.Entities
+﻿@using GymBuddy.Infrastructure.Utilities
+@using Gymbuddy.Core.Entities
 @using Gymbuddy.ViewModels
 @model List<CompetingUser>
+@inject UserManager _userManager
 <style>
 #tablet{
     border:2px solid #303030 ;
@@ -10,7 +12,7 @@ th,td{
     color:white;
 }
 </style>
-@if(Context.Session.GetString("loggedUser") != null)
+@if(_userManager.isSignedIn() == true)
 {
     <a class="btn btn-dark" style="margin-top:10px"asp-action="CompetitionSignUp" asp-controller="Competition">Sign Up</a>
 }

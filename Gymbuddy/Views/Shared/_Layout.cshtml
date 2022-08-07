@@ -1,6 +1,8 @@
-﻿@using Gymbuddy.Core.Entities
+﻿@using GymBuddy.Infrastructure.Utilities
+@using Gymbuddy.Core.Entities
 @using Gymbuddy.Infrastructure
 @using Newtonsoft.Json
+@inject UserManager _userManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,35 +90,30 @@ display: block;
                  <a class="nav-link" asp-action="Index" asp-controller="Home">Home</a>
                </li>
                
-        @if (Context.Session.GetString("loggedUser") != null)
+        @if (_userManager.isSignedIn())
                 {
          <ul class="navbar-nav">
              <li class="nav-item">
             <a class="nav-link" asp-action="Index" asp-controller="Competition">Competition</a>
              </li>
                             </ul>
-                             <li class="nav-item">
-                                             <a class="nav-link" asp-action="Index" asp-controller="Administration">Administration</a>
-                                         </li>
-                           @* {
-                                GymDB db = new GymDB();
-                                var user = JsonConvert.DeserializeObject<User>(Context.Session.GetString("loggedUser"));
-                                var role = db.Roles.FirstOrDefault(x => x.Name == "Admin");
+                            
+           {
 
-                                if(db.UserRoles.Any(x => x.UserId == user.Id && x.RoleId == role.Id))
-                                {
-                                    <ul class="navbar-nav">
-                                        <li class="nav-item">
-                                             <a class="nav-link" asp-action="Index" asp-controller="Administration">Administration</a>
-                                         </li>
-                                    </ul> 
-                                }
-                            }*@
+           if(_userManager.isAdmin() == true)
+               {
+                   <ul class="navbar-nav">
+                       <li class="nav-item">
+                          <a class="nav-link" asp-action="Index" asp-controller="Administration">Administration</a>
+                      </li>
+                  </ul> 
+               }
+           }
                 }
         </ul>
                     
                 </div>
- @if(Context.Session.GetString("loggedUser") != null)
+ @if(_userManager.isSignedIn() == true)
                     {                         
                            
                                <div class="dropdown">

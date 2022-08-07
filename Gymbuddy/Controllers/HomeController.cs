@@ -9,6 +9,7 @@ using GymBuddy.Infrastructure.Repository.IRepository;
 using GymBuddy.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
 using GymBuddy.Core.Entities;
+using GymBuddy.Infrastructure.Utilities;
 
 namespace Gymbuddy.Controllers
 {
