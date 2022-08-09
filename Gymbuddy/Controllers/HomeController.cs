@@ -33,9 +33,13 @@ namespace Gymbuddy.Controllers
         public IActionResult Index()
         {
             PostViewModel PostVM = new PostViewModel();
-            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties: "User,Comment,Comment.User");
-            PostVM.Comments = _unitOfWork.Comment.GetAll();
+            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties:"User");
+            PostVM.PostComments = _unitOfWork.PostComment.GetAll(includeProperties:"Post,Post.User,Comment,Comment.User");
+            PostVM.Comments = _unitOfWork.Comment.GetAll(includeProperties:"User");
             return View(PostVM);
+
+            
+            //PostVM.Comments = _unitOfWork.Comment.GetAll();
         }
 
         public IActionResult Privacy()
@@ -151,14 +155,18 @@ namespace Gymbuddy.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public IActionResult Comment(PostViewModel PostVM)
+        public IActionResult Comment(PostViewModel PostVM,int id)
         {
             var user = _userManager.Get();
+            PostComment postComment = new PostComment();
             Comment comment = new Comment();
             comment.UserId = user.Id;
-            comment.PostId = PostVM.Post.Id;
             comment.Description = PostVM.Comment.Description;
             _unitOfWork.Comment.Add(comment);
+            _unitOfWork.Save();
+            postComment.CommentId = comment.Id;
+            postComment.PostId = id;
+            _unitOfWork.PostComment.Add(postComment);
             _unitOfWork.Save();
             return RedirectToAction("Index");
         }

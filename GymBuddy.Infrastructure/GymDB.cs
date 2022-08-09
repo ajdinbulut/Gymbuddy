@@ -12,14 +12,7 @@ namespace Gymbuddy.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseSerialColumns();
-            modelBuilder.Entity<Comment>()
-                        .HasOne(a => a.Post)
-                        .WithOne(a => a.Comment)
-                        .HasForeignKey<Post>(c => c.CommentId);
-            modelBuilder.Entity<Post>()
-                        .HasOne(a => a.Comment)
-                        .WithOne(a => a.Post)
-                        .HasForeignKey<Comment>(c => c.PostId);
+            
         }
         public DbSet<User> Users { get; set; }
         public DbSet<CompetingUser> CompetingUsers { get; set; }
@@ -28,6 +21,7 @@ namespace Gymbuddy.Infrastructure
         public DbSet<UserCountry> UserCountries { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
 
        
     }
