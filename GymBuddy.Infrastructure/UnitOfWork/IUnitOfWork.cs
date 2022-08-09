@@ -14,6 +14,7 @@ namespace GymBuddy.Infrastructure.UnitOfWork
         IUserRoleRepository UserRole { get; }
         IUserCountryRepository UserCountry { get; }
         IPostRepository Post { get; }
+        ICommentRepository Comment { get; }
         void Save();
     }
 }

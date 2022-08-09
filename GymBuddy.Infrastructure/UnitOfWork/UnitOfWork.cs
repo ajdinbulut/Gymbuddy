@@ -20,6 +20,7 @@ namespace GymBuddy.Infrastructure.UnitOfWork
             UserRole = new UserRoleRepository(_db);
             UserCountry = new UserCountryRepository(_db);
             Post = new PostRepository(_db);
+            Comment = new CommentRepository(_db);
         }
         public IUserRepository User { get; private set; }
 
@@ -28,6 +29,7 @@ namespace GymBuddy.Infrastructure.UnitOfWork
         public IUserRoleRepository UserRole { get; private set; }
         public IUserCountryRepository UserCountry { get; private set; }
         public IPostRepository Post { get; private set; }
+        public ICommentRepository Comment { get; private set; }
 
         public void Save()
         {

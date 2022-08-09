@@ -1,12 +1,26 @@
 ﻿@using GymBuddy.Core.Entities
+@using GymBuddy.Infrastructure.Utilities
 @using Gymbuddy.ViewModels
-@model IEnumerable<Post>
-<style>
-    #postId{
-        width:auto;
-        height:auto;
-        border:solid 3px white;
+@model PostViewModel
+@inject UserManager _userManager
+
+        <style>
+    #form1{
+        border:solid 3px grey;
+        border-radius:5px;
+        background-color:grey;
+            }
+    #post1{
+        width:50%;
+        height:50%;
+        border:solid 3px grey;
         margin-bottom:3px;
+        border-radius:5px;
+        background-color:grey;
+    }
+   
+    #post2{
+        background-color:#AFAFAF;
     }
     img{
         width:50%;
@@ -16,20 +30,89 @@
     p{
         margin-left:5px;
     }
-</style>
+   /* #dd1{
+        
+        position:relative;
+        left:80%;
+        
+    }*/
+  
+        </style>
 @if(TempData["success"] != null){
        <h2>@TempData["success"]</h2>
 }
 
-    <hr />
-    <a asp-action="Post" asp-controller="Home" class="btn btn-primary">Post</a>
-   
-    @foreach(var post in Model){
-        <div id="postId">
-            <h3>@post.User.Name</h3>
-            <p>@post.Description</p>
-            <img src="@post.ImageUrl">
-            <br />
+ <div class="h-100 w-100 bg-dark d-block mt-0 mb-0 d-flex flex-column align-items-center">
+
+@if (_userManager.isSignedIn())
+{
+
+    <form asp-action="Post" asp-controller="Home" method="post" enctype="multipart/form-data">
+        <div class="border p-3 mt-4" style="height:200px;width:500px" id="form1">
+            <input type="hidden" name="id" />
+            <div class="col-md-12 ">
+                <textarea asp-for="Post.Description" placeholder="Enter a description of your post.." class="form-control"></textarea> 
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Post.ImageUrl"></label>
+                <input type="file" name="file" placeholder="Select an image.." class="form-control"/>
+            </div>
+           <button type="submit" class="btn btn-light mt-1">Submit</button>
+
+        </div>
+    </form>
+
+    @foreach (var post in Model.Posts)
+    {
+        <div id="post1" class="mt-3 mb-3 ms-lg-2 w-50 h-50 shadow-lg" style="height:600px;width:500px">
+            <div id="post2">
+                <h3 class="ms-lg-2 d-inline">@post.User.Name</h3>
+                @{
+                    var user = _userManager.Get();
+                   
+                                                        <div class="btn-group dropstart float-end">
+                                                             <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                 
+                                                             </button>
+                                                             <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
+                                                              @if (user.Id == post.UserId)
+                    {
+                                                                 <li > 
+                                                                 <a class="dropdown-item" asp-action="DeletePost" asp-controller="Home" asp-route-id="@post.Id" >Delete </a>
+                                                                </li>
+                    }
+                                                             </ul>
+                                                        </div>
+                    
+                }
+                <hr class="text-black">
+                <p class="ms-lg-2">@post.Description</p>
+                
+            </div>
+            <div >
+              <img src="@post.ImageUrl"class="rounded mx-auto d-block">
+            </div>
+            <hr class="text-black">
+            @foreach(var item in Model.Comments){
+           @if(item.PostId == post.Id){
+             <div class="bg-white">
+                        <h6 style="margin:3px">@post.Comment.User.Name</h6>
+                        <span style="margin:3px">@post.Comment.Description</span>
+             </div>
+           }
+            }
+                
+                <form asp-action="Comment" asp-controller="Home" method="post">
+            <div>
+                        
+                        <input type="hidden" asp-for="@post.Id">
+                <input type="hidden">
+                <textarea asp-for="Comment.Description" placeholder="Comment something.." class="form-control d-inline"></textarea>
+                <button type="submit"class="btn btn-dark d-inline">Submit</button>
+            </div>
+            </form>
         </div>
     }
 
+}
+</div>

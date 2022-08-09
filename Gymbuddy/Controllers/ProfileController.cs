@@ -11,31 +11,49 @@ namespace Gymbuddy.Controllers
     public class ProfileController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager _userManager;
 
-        public ProfileController(IUnitOfWork unitOfWork)
+        public ProfileController(IUnitOfWork unitOfWork,UserManager userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
-            if (HttpContext?.Session.GetString("loggedUser") == null)
+            if (!_userManager.isSignedIn())
             {
                 return RedirectToAction("Login", "Home");
             }
             else
             {
 
-                var modelasJson = HttpContext?.Session.GetString("loggedUser");
-                var model = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString(modelasJson));
+                var model = _userManager.Get();
                 var userCountry = _unitOfWork.UserCountry.GetFirstOrDefault(x => x.UserId == model.Id);
-                UserCountryViewModel userCountryVM = new UserCountryViewModel()
+                UserCountryViewModel userCountryVM = new UserCountryViewModel();
+                if (userCountry != null)
                 {
-                    UserName = model.Name,
-                    username = model.username,
-                    email = model.email,
-                    age = model.age,
-                    CountryName = userCountry.Name
-                };
+                    userCountryVM = new UserCountryViewModel()
+                    {
+                        CountryName = userCountry.Name,
+                        Name = model.Name,
+                        username = model.username,
+                        email = model.email,
+                        age = model.age,
+
+                    };
+                }
+                else
+                {
+                    userCountryVM = new UserCountryViewModel()
+                    {
+                        Name = model.Name,
+                        username = model.username,
+                        email = model.email,
+                        age = model.age,
+
+                    };
+                    
+                }
                 return View(userCountryVM);
             }
             ;
@@ -43,8 +61,7 @@ namespace Gymbuddy.Controllers
         
         public IActionResult EditPW()
         {
-            var modelAsJson = HttpContext.Session.GetString("loggedUser");
-            var model = JsonConvert.DeserializeObject<User>(modelAsJson);
+            var model = _userManager.Get();
             return View(model);
         }
         [HttpPost]
@@ -65,8 +82,7 @@ namespace Gymbuddy.Controllers
         [HttpPost]
         public IActionResult AddCountry(string Name)
         {
-            var modelAsJson = HttpContext.Session.GetString("loggedUser");
-            var model = JsonConvert.DeserializeObject<User>(modelAsJson);
+            var model = _userManager.Get();
             var user = _unitOfWork.User.GetFirstOrDefault(u => u.Id == model.Id);
             UserCountry userCountry = new UserCountry();
             userCountry.Name = Name;

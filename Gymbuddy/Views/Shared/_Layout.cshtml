@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tapestry&display=swap" rel="stylesheet">
     <style>
-    
+   
         #login{
             background-color:#04042E;
             border:1px solid;
@@ -76,7 +76,7 @@ display: block;
 }
     </style>
 </head>
-<body class="bg-black">
+<body class="bg-black ">
     <header>
        <nav class="navbar navbar-expand-lg navbar-dark bg-dark flex-wrap flex-md-nowrap" >
            <div class="container-fluid">
@@ -116,41 +116,40 @@ display: block;
  @if(_userManager.isSignedIn() == true)
                     {                         
                            
-                               <div class="dropdown">
-  <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
-    data-bs-toggle="dropdown"  aria-expanded="false">User</button>
-  <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
-    <li>
-        <a class="dropdown-item" asp-action="Index" asp-controller="Profile">My Profile &raquo;</a>
-    </li>      
-    <li>
-      <a class="dropdown-item">
-        Settings &raquo;
-      </a>
-      
-      <ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
-        <li>
-          <a class="dropdown-item"  asp-action="EditPW" asp-controller="Profile">Change password</a>
-        </li>
+       <div class="dropdown">
+             <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
+                 data-bs-toggle="dropdown"  aria-expanded="false">User</button>
+            <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
+                 <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Profile">My Profile &raquo;</a>
+                 </li>      
+                 <li>
+                    <a class="dropdown-item">
+                        Settings &raquo;
+                     </a>
+            <ul class="dropdown-menu dropdown-submenu dropdown-submenu-left">
+                 <li>
+                     <a class="dropdown-item"  asp-action="EditPW" asp-controller="Profile">Change password</a>
+                 </li>
         
-       </ul>
+             </ul>
         
-        <li>
-      <a class="dropdown-item" asp-action="Logout" asp-controller="Home">Logout</a>
-        </li>
-   </ul>
-</div>
+                 <li>
+                    <a class="dropdown-item" asp-action="Logout" asp-controller="Home">Logout</a>
+                 </li>
+             </ul>
+        </div>
                            }
 else{
                         
-   <div class="collapse navbar-collapse justify-content-end" >
+    <div class="collapse navbar-collapse justify-content-end" >
         <a asp-action="Login" asp-controller="Home"><button type="button" id="login">Login</button></a>
         <a asp-action="Register" asp-controller="Home"><button type="button" id="register">Register</button></a>
-   </div>
+    </div>
 }
-     </div>
-       </nav>
-    </header>
+    </div>
+   </nav>
+</header>
     
     <div class="container">
         <main role="main" class="pb-3">

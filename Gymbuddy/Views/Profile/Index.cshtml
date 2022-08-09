@@ -1,18 +1,15 @@
-﻿@using Gymbuddy.Core.Entities
+﻿@using GymBuddy.Infrastructure.UnitOfWork
+@using GymBuddy.Infrastructure.Utilities
+@using Gymbuddy.Core.Entities
 @using Gymbuddy.Infrastructure
 @using Gymbuddy.ViewModels
 @using Newtonsoft.Json
 @model UserCountryViewModel
+
 <h1 class="h1" style="color:white">Profile</h1>
-@*@{
-    GymDB db = new GymDB();
-    var user = JsonConvert.DeserializeObject<User>(Context.Session.GetString("loggedUser"));
-    var userHasCountry = db.UserCountries.Any(x => x.UserId == user.Id);
-    if (!userHasCountry)
-    {
-        <a asp-action="AddCountry" asp-controller="Profile">Add Country</a>
-    }
-}*@
+
+<a asp-action="AddCountry" asp-controller="Profile">Add Country</a>
+
 <section class="vh-100" >
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-left align-items-baseline h-100">
@@ -24,13 +21,13 @@
                  
                  <h4 >Information</h4>
                
-                <h5 class="mb-1">Name:@Model.UserName</h5>
+                <h5 class="mb-1">Name:@Model.Name</h5>
                 <p class="mb-1">Username:@Model.username</p>
                 <p class="mb-1">Email:@Model.email</p>
                 <p class="mb-1">Age:@Model.age</p>
-               @* @if(userHasCountry){
+               @if(@Model.CountryName != null){
                 <p class="mb-1">Country:@Model.CountryName</p>
-                }*@
+                }
               </div>
             </div>
           </div>

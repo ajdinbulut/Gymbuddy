@@ -10,6 +10,7 @@ using GymBuddy.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Hosting;
 using GymBuddy.Core.Entities;
 using GymBuddy.Infrastructure.Utilities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Gymbuddy.Controllers
 {
@@ -17,17 +18,24 @@ namespace Gymbuddy.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _hostEnviroment;
+        private readonly UserManager _userManager;
+        private readonly GymDB _db;
 
-        public HomeController(IUnitOfWork unitOfWork,IWebHostEnvironment hostEnvironment)
+
+        public HomeController(IUnitOfWork unitOfWork,IWebHostEnvironment hostEnvironment, UserManager userManager, GymDB db)
         {
             _unitOfWork = unitOfWork;
             _hostEnviroment = hostEnvironment;
+            _userManager = userManager;
+            _db = db;
         }
 
         public IActionResult Index()
         {
-            var posts = _unitOfWork.Post.GetAll(includeProperties:"User");           
-            return View(posts);
+            PostViewModel PostVM = new PostViewModel();
+            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties: "User,Comment,Comment.User");
+            PostVM.Comments = _unitOfWork.Comment.GetAll();
+            return View(PostVM);
         }
 
         public IActionResult Privacy()
@@ -91,7 +99,7 @@ namespace Gymbuddy.Controllers
             var user = _unitOfWork.User.GetFirstOrDefault(x => x.username == model.username && x.password == model.password);
             if (user != null)
             {
-                HttpContext.Session.SetString("loggedUser", JsonConvert.SerializeObject(user));
+                _userManager.SignIn(user);
                 return RedirectToAction("Index");
             }
             else
@@ -106,14 +114,10 @@ namespace Gymbuddy.Controllers
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("loggedUser");
+            _userManager.SignOut();
             return RedirectToAction("Index");
         }
-        public IActionResult Post()
-        {
-
-            return View();
-        }
+        
         [HttpPost]
         public IActionResult Post(PostViewModel PostVM, IFormFile? file)
         {
@@ -129,7 +133,7 @@ namespace Gymbuddy.Controllers
                 }
                 PostVM.Post.ImageUrl = @"\images\posts\" + fileName + extension;
             }
-            var user = JsonConvert.DeserializeObject<User>(HttpContext.Session.GetString("loggedUser"));
+            var user = _userManager.Get();
             Post post = new Post();
             post.UserId = user.Id;
             post.ImageUrl = PostVM.Post.ImageUrl;
@@ -139,8 +143,25 @@ namespace Gymbuddy.Controllers
 
             return RedirectToAction("Index");
         }
-
-
+        public IActionResult DeletePost(int id)
+        {
+            var post = _db.Posts.Find(id);
+            _unitOfWork.Post.Remove(post);
+            _unitOfWork.Save();
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult Comment(PostViewModel PostVM)
+        {
+            var user = _userManager.Get();
+            Comment comment = new Comment();
+            comment.UserId = user.Id;
+            comment.PostId = PostVM.Post.Id;
+            comment.Description = PostVM.Comment.Description;
+            _unitOfWork.Comment.Add(comment);
+            _unitOfWork.Save();
+            return RedirectToAction("Index");
+        }
 
 
 

@@ -23,8 +23,15 @@ namespace GymBuddy.Infrastructure.Utilities
 
         public User? Get()
         {
-           return JsonConvert.DeserializeObject<User>(_httpContextAccessor.HttpContext.Session.GetString(_loggedUserKey));
-            
+            var user = _httpContextAccessor.HttpContext.Session.GetString(_loggedUserKey);
+            if (user != null)
+            {
+                return JsonConvert.DeserializeObject<User>(_httpContextAccessor.HttpContext.Session.GetString(_loggedUserKey));
+            }
+            else
+            {
+                return null;
+            }
         }
         public void SignIn(User user)
         {

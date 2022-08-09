@@ -1,6 +1,7 @@
 ﻿using Gymbuddy.Core.Entities;
 using Gymbuddy.Infrastructure;
 using Gymbuddy.ViewModels;
+using GymBuddy.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -9,16 +10,18 @@ namespace Gymbuddy.Controllers
     public class CompetitionController : Controller
     {
         private readonly GymDB _db;
+        private readonly UserManager _userManager;
 
-        public CompetitionController(GymDB db)
+        public CompetitionController(GymDB db,UserManager userManager)
         {
             _db = db;
+            _userManager = userManager;
 
         }
         public IActionResult Index()
         {
 
-            if (HttpContext.Session.GetString("loggedUser") != null)
+            if (_userManager.isSignedIn())
             {
                 var user = _db.CompetingUsers.OrderByDescending(x => x.total).ToList();
                 return View(user);
@@ -30,8 +33,7 @@ namespace Gymbuddy.Controllers
         }
         public IActionResult CompetitionSignUp()
         {
-            var modelAsJson = HttpContext.Session.GetString("loggedUser");
-            var user = JsonConvert.DeserializeObject<CompetingUser>(modelAsJson);
+            var user = _userManager.Get();
            
 
             return View(user);
