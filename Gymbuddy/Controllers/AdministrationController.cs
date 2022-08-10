@@ -36,8 +36,8 @@ namespace Gymbuddy.Controllers
 
                 obj.Id = items.Id;
                 obj.Name = items.Name;
-                obj.Age = items.age;
-                obj.Username = items.username;
+                obj.Age = items.Age;
+                obj.Username = items.Username;
                 obj.UserRoles = items.UserRoles;
                 AdministrationVM.Add(obj);
             }
@@ -51,10 +51,10 @@ namespace Gymbuddy.Controllers
             EditAccViewModel editAcc = new EditAccViewModel();
             editAcc.Id = user.Id;
             editAcc.Name = user.Name;
-            editAcc.Username = user.username;
-            editAcc.Age = user.age;
-            editAcc.email = user.email;
-            editAcc.password = user.password;
+            editAcc.Username = user.Username;
+            editAcc.Age = user.Age;
+            editAcc.email = user.Email;
+            editAcc.password = user.Password;
             editAcc.RoleID = userID.RoleId;
             return View(editAcc);
         }
@@ -64,10 +64,10 @@ namespace Gymbuddy.Controllers
             UserRole userRole = new UserRole();
             var user = _unitOfWork.User.GetFirstOrDefault(u=>u.Id== editAcc.Id);
             user.Name = editAcc.Name;
-            user.username = editAcc.Username;
-            user.age = editAcc.Age;
-            user.password = editAcc.password;
-            user.email = editAcc.email;
+            user.Username = editAcc.Username;
+            user.Age = editAcc.Age;
+            user.Password = editAcc.password;
+            user.Email = editAcc.email;
             userRole.UserId = editAcc.Id;
             userRole.RoleId = editAcc.RoleID;
             if (!_db.UserRoles.Any(x => x.UserId == editAcc.Id && x.RoleId == editAcc.RoleID))

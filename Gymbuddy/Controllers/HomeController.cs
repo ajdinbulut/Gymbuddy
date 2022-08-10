@@ -68,7 +68,7 @@ namespace Gymbuddy.Controllers
             User model = new User();
             UserRole userRole = new UserRole();
             var role = _unitOfWork.Role.GetFirstOrDefault(x => x.Name == "User");
-            var user = _unitOfWork.User.GetFirstOrDefault(u => u.username == mod.username || u.email == mod.email);
+            var user = _unitOfWork.User.GetFirstOrDefault(u => u.Username == mod.username || u.Email == mod.email);
 
             if (user != null)
             {
@@ -76,10 +76,10 @@ namespace Gymbuddy.Controllers
                 return View(mod);
 
             }
-            model.username = mod.username;
-            model.password = mod.password;
-            model.age = mod.age;
-            model.email = mod.email;
+            model.Username = mod.username;
+            model.Password = mod.password;
+            model.Age = mod.age;
+            model.Email = mod.email;
             model.Name = mod.name;
             _unitOfWork.User.Add(model);
             _unitOfWork.Save();
@@ -100,7 +100,7 @@ namespace Gymbuddy.Controllers
         public IActionResult Login(User model)
         {
 
-            var user = _unitOfWork.User.GetFirstOrDefault(x => x.username == model.username && x.password == model.password);
+            var user = _unitOfWork.User.GetFirstOrDefault(x => x.Username == model.Username && x.Password == model.Password);
             if (user != null)
             {
                 _userManager.SignIn(user);

@@ -1,31 +1,17 @@
-﻿
-using Gymbuddy.Core.Entities;
-using GymBuddy.Core.Entities;
-using GymBuddy.Infrastructure;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Gymbuddy.Core.Entities;
+using Gymbuddy.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Gymbuddy.Infrastructure
+namespace GymBuddy.Infrastructure
 {
-    public class GymDB : DbContext
+    partial class GymDBSeed
     {
-
-        public GymDB(DbContextOptions<GymDB> options) : base(options) { }
         
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.UseSerialColumns();
-            SeedData(modelBuilder);
-        }
-        public DbSet<User> Users { get; set; }
-        public DbSet<CompetingUser> CompetingUsers { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<UserCountry> UserCountries { get; set; }
-        public DbSet<Post> Posts { get; set; }
-        public DbSet<Comment> Comments { get; set; }
-        public DbSet<PostComment> PostComments { get; set; }
-
         private static void SeedData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasData(
@@ -63,12 +49,13 @@ namespace Gymbuddy.Infrastructure
                 },
                 new UserRole
                 {
-                    Id = 2,
+                    Id = 1,
                     UserId = 1,
                     RoleId = 2
                 }
             });
 
         }
+
     }
 }

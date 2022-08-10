@@ -41,7 +41,7 @@ namespace Gymbuddy.Controllers
         [HttpPost]
         public IActionResult CompetitionSignUp(CompetingUser user)
         {
-            var getId = _db.Users.FirstOrDefault(x=>x.username == user.username);
+            var getId = _db.Users.FirstOrDefault(x=>x.Username == user.username);
             CompetingUser model = new CompetingUser();
             model.username = user.username;
             model.bench = user.bench;

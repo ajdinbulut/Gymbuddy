@@ -151,6 +151,18 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "User"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.User", b =>
@@ -161,28 +173,39 @@ namespace GymBuddy.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Age")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("age")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("email")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("username")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Age = 21,
+                            Email = "ajdinbulut@gmail.com",
+                            Name = "admin",
+                            Password = "admin123",
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.UserCountry", b =>
@@ -228,6 +251,20 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            RoleId = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            RoleId = 2,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("GymBuddy.Core.Entities.Comment", b =>

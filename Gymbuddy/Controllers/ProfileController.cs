@@ -36,9 +36,9 @@ namespace Gymbuddy.Controllers
                     {
                         CountryName = userCountry.Name,
                         Name = model.Name,
-                        username = model.username,
-                        email = model.email,
-                        age = model.age,
+                        username = model.Username,
+                        email = model.Email,
+                        age = model.Age,
 
                     };
                 }
@@ -47,9 +47,9 @@ namespace Gymbuddy.Controllers
                     userCountryVM = new UserCountryViewModel()
                     {
                         Name = model.Name,
-                        username = model.username,
-                        email = model.email,
-                        age = model.age,
+                        username = model.Username,
+                        email = model.Email,
+                        age = model.Age,
 
                     };
                     
@@ -68,7 +68,7 @@ namespace Gymbuddy.Controllers
         public IActionResult EditPW(string password, int id)
         {
             var model = _unitOfWork.User.GetFirstOrDefault(u=>u.Id == id);
-            model.password = password;
+            model.Password = password;
             _unitOfWork.User.Update(model);
             _unitOfWork.Save();
             return RedirectToAction("Index", "Home");
