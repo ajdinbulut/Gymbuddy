@@ -1,11 +1,17 @@
-﻿namespace Gymbuddy.ViewModels
+﻿using Gymbuddy.Core.Entities;
+using GymBuddy.Core.Entities;
+
+namespace Gymbuddy.ViewModels
 {
     public class ProfileViewModel
     {
-        public string Name { get; set; }
-        public string email { get; set; }
-        public string username  { get; set; }
-        public string Country { get; set; }
+        public User User { get; set; }
+        public PostComment PostComment { get; set; }
+        public Comment Comment { get; set; }
+        public IEnumerable<Post> Posts { get; set; }
+        public IEnumerable<Comment> Comments { get; set; }
+        public IEnumerable<PostComment> PostComments { get; set; }
+
 
     }
 }

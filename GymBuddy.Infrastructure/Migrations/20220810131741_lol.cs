@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GymBuddy.Infrastructure.Migrations
 {
-    public partial class initial : Migration
+    public partial class lol : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,11 +28,12 @@ namespace GymBuddy.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
                     Age = table.Column<int>(type: "integer", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false)
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    ProfilePhoto = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -187,8 +188,8 @@ namespace GymBuddy.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Age", "Email", "Name", "Password", "Username" },
-                values: new object[] { 1, 21, "ajdinbulut@gmail.com", "admin", "admin123", "admin" });
+                columns: new[] { "Id", "Age", "Email", "Name", "Password", "ProfilePhoto", "Username" },
+                values: new object[] { 1, 21, "ajdinbulut@gmail.com", "admin", "admin123", null, "admin" });
 
             migrationBuilder.InsertData(
                 table: "UserRoles",

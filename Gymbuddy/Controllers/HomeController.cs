@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using GymBuddy.Core.Entities;
 using GymBuddy.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Gymbuddy.Utilities;
 
 namespace Gymbuddy.Controllers
 {
@@ -19,15 +20,17 @@ namespace Gymbuddy.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _hostEnviroment;
         private readonly UserManager _userManager;
+        private readonly FileManager _fileManager;
         private readonly GymDB _db;
 
 
-        public HomeController(IUnitOfWork unitOfWork,IWebHostEnvironment hostEnvironment, UserManager userManager, GymDB db)
+        public HomeController(IUnitOfWork unitOfWork,IWebHostEnvironment hostEnvironment, UserManager userManager, GymDB db,FileManager fileManager)
         {
             _unitOfWork = unitOfWork;
             _hostEnviroment = hostEnvironment;
             _userManager = userManager;
             _db = db;
+            _fileManager = fileManager;
         }
 
         public IActionResult Index()
@@ -63,8 +66,9 @@ namespace Gymbuddy.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Register(RegisterViewModel mod)
+        public IActionResult Register(RegisterViewModel mod, IFormFile? file)
         {
+            string wwwRootPath = _hostEnviroment.WebRootPath;
             User model = new User();
             UserRole userRole = new UserRole();
             var role = _unitOfWork.Role.GetFirstOrDefault(x => x.Name == "User");
@@ -81,6 +85,7 @@ namespace Gymbuddy.Controllers
             model.Age = mod.age;
             model.Email = mod.email;
             model.Name = mod.name;
+            model.ProfilePhoto = _fileManager.profilePhoto(file);
             _unitOfWork.User.Add(model);
             _unitOfWork.Save();
             userRole.UserId = model.Id;
@@ -128,21 +133,18 @@ namespace Gymbuddy.Controllers
             string wwwRootPath = _hostEnviroment.WebRootPath;
             if(file != null)
             {
-                string fileName = Guid.NewGuid().ToString();
-                var uploads = Path.Combine(wwwRootPath, @"images\posts");
-                var extension = Path.GetExtension(file.FileName);
-                using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
-                {
-                    file.CopyTo(fileStreams);
-                }
-                PostVM.Post.ImageUrl = @"\images\posts\" + fileName + extension;
+             PostVM.Post.ImageUrl = _fileManager.postUpload(file);
             }
             var user = _userManager.Get();
+            PostComment postComment = new PostComment();
             Post post = new Post();
             post.UserId = user.Id;
             post.ImageUrl = PostVM.Post.ImageUrl;
             post.Description = PostVM.Post.Description;
             _unitOfWork.Post.Add(post);
+            _unitOfWork.Save();
+            postComment.PostId = post.Id;
+            _unitOfWork.PostComment.Add(postComment);
             _unitOfWork.Save();
 
             return RedirectToAction("Index");

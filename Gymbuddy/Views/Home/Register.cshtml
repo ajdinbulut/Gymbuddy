@@ -97,6 +97,19 @@
     color: white;
 
 }
+#file input[type="file"]{
+    width: 50%;
+    height: 80px;
+    font-size: 0.8em;
+    margin-left: 25%;
+    margin-top: 4%;
+    border-radius: 2em;
+    border:3px solid #3498db;
+    text-align: center;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    color: white;
+}
 #button{
     width: 80%;
     margin: auto;
@@ -203,6 +216,9 @@ media only screen and (max-width:600px) {
             </div>
             <div id="email">
                 <input type="email" asp-for="@Model.email" placeholder="Email">
+            </div>
+            <div id="file">
+                <input type="file" placeholder="Select your profile photo.." />
             </div>
             <div id="button">
                 <button id="btn">Register</button>

@@ -36,7 +36,7 @@ namespace Gymbuddy.Infrastructure
                     Username = "admin",
                     Password = "admin123",
                     Age = 21,
-                    Email = "ajdinbulut@gmail.com"
+                    Email = "ajdinbulut@gmail.com",
 
 
                 }

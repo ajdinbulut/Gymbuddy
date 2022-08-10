@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using Microsoft.AspNetCore.Identity;
 using GymBuddy.Infrastructure.Utilities;
+using Gymbuddy.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("GymDBConnection") ?? throw new InvalidOperationException("Connection string 'GymDBConnection' not found.");
@@ -13,6 +14,7 @@ var connectionString = builder.Configuration.GetConnectionString("GymDBConnectio
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<FileManager>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();

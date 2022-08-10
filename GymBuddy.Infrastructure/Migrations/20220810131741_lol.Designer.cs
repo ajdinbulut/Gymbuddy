@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GymBuddy.Infrastructure.Migrations
 {
     [DbContext(typeof(GymDB))]
-    [Migration("20220810012759_initial")]
-    partial class initial
+    [Migration("20220810131741_lol")]
+    partial class lol
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -188,6 +188,9 @@ namespace GymBuddy.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProfilePhoto")
                         .HasColumnType("text");
 
                     b.Property<string>("Username")

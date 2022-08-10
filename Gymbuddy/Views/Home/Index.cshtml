@@ -95,7 +95,7 @@
             <hr class="text-black">
             
             @foreach(var item in Model.PostComments){
-                @if(item.PostId == post.Id){
+                @if(item.PostId == post.Id && item.CommentId != null){
              <div class="bg-white">
                         <h6 style="margin:3px">@item.Comment.User.Name</h6>
                         <span style="margin:3px">@item.Comment.Description</span>
