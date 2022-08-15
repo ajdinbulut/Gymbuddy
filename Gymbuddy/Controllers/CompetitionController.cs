@@ -33,10 +33,8 @@ namespace Gymbuddy.Controllers
         }
         public IActionResult CompetitionSignUp()
         {
-            var user = _userManager.Get();
            
-
-            return View(user);
+            return View();
         }
         [HttpPost]
         public IActionResult CompetitionSignUp(CompetingUser user)

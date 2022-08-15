@@ -5,9 +5,10 @@
 @inject UserManager _userManager
 
         <style>
+           
     #form1{
         border:solid 3px grey;
-        border-radius:5px;
+        border-radius:1em;
         background-color:grey;
             }
     #post1{
@@ -15,18 +16,18 @@
         height:50%;
         border:solid 3px grey;
         margin-bottom:3px;
-        border-radius:5px;
+        border-radius:0.5em;
         background-color:grey;
     }
    
     #post2{
         background-color:#AFAFAF;
     }
-    img{
+    /*img{
         width:50%;
         height:50%;
         margin-left:5px;
-    }
+    }*/
     p{
         margin-left:5px;
     }
@@ -36,28 +37,62 @@
         left:80%;
         
     }*/
+    #container{
+        height:100%;
+        width:75%;
+        margin:auto;
+        padding:0.5em;
+    }
+    *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+    }
+    #postbtn{
+        color:black;
+        text-decoration:none;
+        border:none;
+        background-color:rgb(255,255,255);
+        padding:0.2em 0.5em;
+        margin-top:3px;
+    }
+    #postbtn:hover{
+        background-color:rgb(255,255,255,0.8);
+    }
   
+    #postimg{
+        height:100%;
+        width:100%;
+    }
+    #comments{
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        margin:5px;
+        border-radius:0.5em;
+    }
+   
         </style>
 @if(TempData["success"] != null){
        <h2>@TempData["success"]</h2>
 }
 
- <div class="h-100 w-100 bg-dark d-block mt-0 mb-0 d-flex flex-column align-items-center">
+ <div class="bg-dark d-block mt-0 mb-0 d-flex flex-column align-items-center" id="container">
 
 @if (_userManager.isSignedIn())
 {
 
     <form asp-action="Post" asp-controller="Home" method="post" enctype="multipart/form-data">
-        <div class="border p-3 mt-4" style="height:200px;width:500px" id="form1">
+        <div class=" p-3 mt-4" style="height:200px;width:700px" id="form1">
             <input type="hidden" name="id" />
             <div class="col-md-12 ">
                 <textarea asp-for="Post.Description" placeholder="Enter a description of your post.." class="form-control"></textarea> 
             </div>
-            <div class="col-md-6">
-                <label asp-for="Post.ImageUrl"></label>
+            <div class="col-md-6 mt-2">
+                <label hidden asp-for="Post.ImageUrl"></label>
                 <input type="file" name="file" placeholder="Select an image.." class="form-control"/>
             </div>
-           <button type="submit" class="btn btn-light mt-1">Submit</button>
+           <button type="submit"  id="postbtn">Submit</button>
 
         </div>
     </form>
@@ -70,19 +105,19 @@
                 @{
                     var user = _userManager.Get();
                    
-                   <div class="btn-group dropstart float-end">
-                          <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                 
-                          </button>
-                       <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
-                       @if (user.Id == post.UserId)
+                                                                                                                                    <div class="btn-group dropstart float-end">
+                                                                                                                                              <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                                                                                                                                                                                                                                         
+                                                                                                                                              </button>
+                                                                                                                                       <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
+                                                                                                                                           @if (user.Id == post.UserId)
                     {
-                             <li > 
-                                 <a class="dropdown-item" asp-action="DeletePost" asp-controller="Home" asp-route-id="@post.Id" >Delete </a>
-                            </li>
+                                                                                                                                           <li > 
+                                                                                                                                                <a class="dropdown-item" asp-action="DeletePost" asp-controller="Home" asp-route-id="@post.Id" >Delete </a>
+                                                                                                                                           </li>
                     }
-                       </ul>
-                   </div>
+                                                                                                                                       </ul>
+                                                                                                                                    </div>
                     
                 }
                 <hr class="text-black">
@@ -90,15 +125,16 @@
                 
             </div>
             <div >
-              <img src="@post.ImageUrl"class="rounded mx-auto d-block">
+              <img src="@post.ImageUrl" class="rounded mx-auto d-block" id="postimg">
             </div>
             <hr class="text-black">
             
-            @foreach(var item in Model.PostComments){
-                @if(item.PostId == post.Id && item.CommentId != null){
-             <div class="bg-white">
-                        <h6 style="margin:3px">@item.Comment.User.Name</h6>
-                        <span style="margin:3px">@item.Comment.Description</span>
+            @foreach(var item in post.Comments){
+                @if(@*item.PostId == post.Id && *@item.Id != null){
+             <div class="bg-white" id="comments">
+                        <h6 style="margin:5px" id="h6">@item.User.Name</h6>
+                         <hr class="text-black">
+                        <span style="margin:5px" id="span">@item.Description</span>
              </div>
            }
             }

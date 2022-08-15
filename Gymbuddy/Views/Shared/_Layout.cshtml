@@ -18,17 +18,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tapestry&display=swap" rel="stylesheet">
     <style>
-   
+ 
         #login{
             background-color:#04042E;
             border:1px solid;
             color:grey;
             margin-right:5px;
+            padding:3px;
         }
        #register{
             background-color:#04042E;
             border:1px solid;
             color:grey;
+            padding:3px;
         }
         #logout{
             background-color:#04042E;
@@ -74,8 +76,27 @@ left: auto;
 .dropdown-menu > li:hover > .dropdown-submenu {
 display: block;
 }
+#btn{
+    color:white;
+    background-color:rgb(4, 4, 46);
+    border:none;
+    padding:5px 10px;
+    border-radius:0.5em;
+}
+#btn:hover{
+    background-color: rgb(4, 4, 46,0.8);
+    color:rgb(184, 184, 191);
+
+}
+.nav-link:hover{
+    text-decoration:underline;
+    transform:translateY(-0.10em);
+}
     </style>
 </head>
+@{
+    var user =_userManager.Get();
+}
 <body class="bg-black ">
     <header>
        <nav class="navbar navbar-expand-lg navbar-dark bg-dark flex-wrap flex-md-nowrap" >
@@ -117,8 +138,10 @@ display: block;
                     {                         
                            
        <div class="dropdown">
-             <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton"
-                 data-bs-toggle="dropdown"  aria-expanded="false">User</button>
+           @{
+                                             <button id="btn" class="dropdown-toggle" type="button" id="dropdownMenuButton"
+                                                 data-bs-toggle="dropdown"  aria-expanded="false">@user.Name</button>
+           }
             <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
                  <li>
                     <a class="dropdown-item" asp-action="Index" asp-controller="Profile">My Profile &raquo;</a>

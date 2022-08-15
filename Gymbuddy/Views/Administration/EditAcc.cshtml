@@ -24,18 +24,19 @@
     <div class="col-md-2">
         <input type="email" name="Email" class="form-control" value="@Model.email"/>
     </div>
-    
-  @* @foreach(var item in )
-    {
-        <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="RoleID" name="RoleID" value="@item.Id">
-        <label class="form-check-label" for="RoleID">
-            @item.Id
-        </label>
-        </div>
-    }*@
-
-   
+    @{
+        int i = 0;
+    }
+    @foreach(var obj in Model.UserRoles){
+    foreach(var item in Model.Roles){
+   <div class="col-md-2">
+        <input type="hidden" asp-for="@Model.RoleId" name="[@i].RoleId"/>
+        <input asp-for="@Model.Selected" name="[@i].Selected" class="form-check-input" onclick="$(this).val(this.checked ? true : false)"/>
+       <label asp-for="@Model.Selected">@item.Name</label>
+            </div>
+            i++;
+        }
+    }
  
     <button type="submit" >Submit</button>
 </form>

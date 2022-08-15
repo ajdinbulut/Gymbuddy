@@ -46,8 +46,6 @@ namespace Gymbuddy.Controllers
         public IActionResult EditAcc(int id)
         {
             var user = _unitOfWork.User.GetFirstOrDefault(u => u.Id == id);
-            var userID = _unitOfWork.UserRole.GetFirstOrDefault(x => x.UserId == id);
-            var roleID = _unitOfWork.Role.GetFirstOrDefault(x => x.Id == userID.RoleId);
             EditAccViewModel editAcc = new EditAccViewModel();
             editAcc.Id = user.Id;
             editAcc.Name = user.Name;
@@ -55,11 +53,12 @@ namespace Gymbuddy.Controllers
             editAcc.Age = user.Age;
             editAcc.email = user.Email;
             editAcc.password = user.Password;
-            editAcc.RoleID = userID.RoleId;
+            editAcc.UserRoles = _unitOfWork.UserRole.GetAll(includeProperties:"Role,Roles").Where(x => x.UserId == user.Id);
+            editAcc.Roles = _unitOfWork.Role.GetAll();
             return View(editAcc);
         }
         [HttpPost]
-        public IActionResult EditAcc(EditAccViewModel editAcc)
+        public IActionResult EditAcc(EditAccViewModel editAcc,int id)
         {
             UserRole userRole = new UserRole();
             var user = _unitOfWork.User.GetFirstOrDefault(u=>u.Id== editAcc.Id);
@@ -69,11 +68,26 @@ namespace Gymbuddy.Controllers
             user.Password = editAcc.password;
             user.Email = editAcc.email;
             userRole.UserId = editAcc.Id;
-            userRole.RoleId = editAcc.RoleID;
-            if (!_db.UserRoles.Any(x => x.UserId == editAcc.Id && x.RoleId == editAcc.RoleID))
+            //foreach (var item in editAcc.UserRoles)
+            //{
+            //    if (!_db.UserRoles.Any(x => x.UserId == editAcc.Id && x.RoleId == editAcc.Id))
+            //    {
+            //        userRole.RoleId = item.RoleId;
+            //        _unitOfWork.UserRole.Add(userRole);
+
+            //    }
+            //}
+            foreach (var item in editAcc.Roles)
             {
-                _unitOfWork.UserRole.Add(userRole);
+
+                if (!_db.UserRoles.Any(x => x.UserId == editAcc.Id && x.RoleId == editAcc.RoleId))
+                {
+                    userRole.RoleId = item.Id;
+
+                }
             }
+            _unitOfWork.UserRole.Add(userRole);
+            _unitOfWork.User.Update(user);
             _unitOfWork.Save();
             return RedirectToAction("Index");
         }

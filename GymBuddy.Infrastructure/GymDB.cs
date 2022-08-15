@@ -24,7 +24,6 @@ namespace Gymbuddy.Infrastructure
         public DbSet<UserCountry> UserCountries { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<PostComment> PostComments { get; set; }
 
         private static void SeedData(ModelBuilder modelBuilder)
         {

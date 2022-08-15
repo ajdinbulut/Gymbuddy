@@ -36,9 +36,8 @@ namespace Gymbuddy.Controllers
         public IActionResult Index()
         {
             PostViewModel PostVM = new PostViewModel();
-            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties:"User");
-            PostVM.PostComments = _unitOfWork.PostComment.GetAll(includeProperties:"Post,Post.User,Comment,Comment.User");
-            PostVM.Comments = _unitOfWork.Comment.GetAll(includeProperties:"User");
+            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties:"User,Comments");
+            //PostVM.Comments = _unitOfWork.Comment.GetAll(includeProperties:"User,Post");
             return View(PostVM);
 
             
@@ -85,7 +84,7 @@ namespace Gymbuddy.Controllers
             model.Age = mod.age;
             model.Email = mod.email;
             model.Name = mod.name;
-            model.ProfilePhoto = _fileManager.profilePhoto(file);
+            model.ProfilePhoto = "/images/profilePhotos/profilephoto.jpg";
             _unitOfWork.User.Add(model);
             _unitOfWork.Save();
             userRole.UserId = model.Id;
@@ -136,15 +135,12 @@ namespace Gymbuddy.Controllers
              PostVM.Post.ImageUrl = _fileManager.postUpload(file);
             }
             var user = _userManager.Get();
-            PostComment postComment = new PostComment();
             Post post = new Post();
             post.UserId = user.Id;
             post.ImageUrl = PostVM.Post.ImageUrl;
             post.Description = PostVM.Post.Description;
             _unitOfWork.Post.Add(post);
             _unitOfWork.Save();
-            postComment.PostId = post.Id;
-            _unitOfWork.PostComment.Add(postComment);
             _unitOfWork.Save();
 
             return RedirectToAction("Index");
@@ -160,15 +156,12 @@ namespace Gymbuddy.Controllers
         public IActionResult Comment(PostViewModel PostVM,int id)
         {
             var user = _userManager.Get();
-            PostComment postComment = new PostComment();
             Comment comment = new Comment();
             comment.UserId = user.Id;
             comment.Description = PostVM.Comment.Description;
+            comment.PostId = id;
             _unitOfWork.Comment.Add(comment);
             _unitOfWork.Save();
-            postComment.CommentId = comment.Id;
-            postComment.PostId = id;
-            _unitOfWork.PostComment.Add(postComment);
             _unitOfWork.Save();
             return RedirectToAction("Index");
         }

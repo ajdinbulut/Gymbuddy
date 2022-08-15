@@ -11,7 +11,9 @@ namespace Gymbuddy.ViewModels
         public string email { get; set; }
 
         public int Age { get; set; }
-        public int RoleID { get; set; }
-
+        public int RoleId { get; set; }
+        public bool Selected { get; set; }
+        public IEnumerable<UserRole> UserRoles { get; set; }
+        public IEnumerable<Role> Roles { get; set; }
     }
 }

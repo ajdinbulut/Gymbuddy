@@ -34,7 +34,7 @@ namespace GymBuddy.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PostCommentId")
+                    b.Property<int>("PostId")
                         .HasColumnType("integer");
 
                     b.Property<int>("UserId")
@@ -42,7 +42,7 @@ namespace GymBuddy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostCommentId");
+                    b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
@@ -98,42 +98,14 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PostCommentId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostCommentId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("GymBuddy.Core.Entities.PostComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("PostComments");
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.Role", b =>
@@ -148,7 +120,12 @@ namespace GymBuddy.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserRoleId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserRoleId");
 
                     b.ToTable("Roles");
 
@@ -272,15 +249,19 @@ namespace GymBuddy.Infrastructure.Migrations
 
             modelBuilder.Entity("GymBuddy.Core.Entities.Comment", b =>
                 {
-                    b.HasOne("GymBuddy.Core.Entities.PostComment", null)
+                    b.HasOne("GymBuddy.Core.Entities.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostCommentId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Gymbuddy.Core.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Post");
 
                     b.Navigation("User");
                 });
@@ -298,10 +279,6 @@ namespace GymBuddy.Infrastructure.Migrations
 
             modelBuilder.Entity("GymBuddy.Core.Entities.Post", b =>
                 {
-                    b.HasOne("GymBuddy.Core.Entities.PostComment", null)
-                        .WithMany("Posts")
-                        .HasForeignKey("PostCommentId");
-
                     b.HasOne("Gymbuddy.Core.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -311,21 +288,11 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GymBuddy.Core.Entities.PostComment", b =>
+            modelBuilder.Entity("Gymbuddy.Core.Entities.Role", b =>
                 {
-                    b.HasOne("GymBuddy.Core.Entities.Comment", "Comment")
-                        .WithMany()
-                        .HasForeignKey("CommentId");
-
-                    b.HasOne("GymBuddy.Core.Entities.Post", "Post")
-                        .WithMany()
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("Post");
+                    b.HasOne("Gymbuddy.Core.Entities.UserRole", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("UserRoleId");
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.UserCountry", b =>
@@ -358,16 +325,19 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GymBuddy.Core.Entities.PostComment", b =>
+            modelBuilder.Entity("GymBuddy.Core.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.User", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Gymbuddy.Core.Entities.UserRole", b =>
+                {
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

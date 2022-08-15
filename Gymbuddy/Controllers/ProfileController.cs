@@ -59,7 +59,6 @@ namespace Gymbuddy.Controllers
                 profile.User = _userManager.Get();
                 profile.Posts = _unitOfWork.Post.GetAll(includeProperties: "User");
                 profile.Comments = _unitOfWork.Comment.GetAll(includeProperties: "User");
-                profile.PostComments = _unitOfWork.PostComment.GetAll(includeProperties: "Post,Post.User,Comment,Comment.User");
                 return View(profile);
             }
             ;
@@ -101,15 +100,12 @@ namespace Gymbuddy.Controllers
         public IActionResult Comment(PostViewModel PostVM, int id)
         {
             var user = _userManager.Get();
-            PostComment postComment = new PostComment();
             Comment comment = new Comment();
             comment.UserId = user.Id;
             comment.Description = PostVM.Comment.Description;
+            comment.PostId = id;
             _unitOfWork.Comment.Add(comment);
             _unitOfWork.Save();
-            postComment.CommentId = comment.Id;
-            postComment.PostId = id;
-            _unitOfWork.PostComment.Add(postComment);
             _unitOfWork.Save();
             return RedirectToAction("Index");
         }
