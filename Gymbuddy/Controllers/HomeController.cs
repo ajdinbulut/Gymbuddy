@@ -38,8 +38,11 @@ namespace Gymbuddy.Controllers
             PostViewModel PostVM = new PostViewModel();
             PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties:"User,Comments");
             //PostVM.Comments = _unitOfWork.Comment.GetAll(includeProperties:"User,Post");
-            return View(PostVM);
-
+            if (PostVM.Posts != null)
+            {
+                return View(PostVM);
+            }
+            return View();
             
             //PostVM.Comments = _unitOfWork.Comment.GetAll();
         }
@@ -165,6 +168,16 @@ namespace Gymbuddy.Controllers
             _unitOfWork.Save();
             return RedirectToAction("Index");
         }
+        //[HttpPost]
+        //public JsonResult LikePost(bool like,int id)
+        //{
+        //    if (like)
+        //    {
+        //        var post = _unitOfWork.Post.GetFirstOrDefault(x => x.Id == id);
+        //        post.Likes += 1;
+        //    }
+        //    return new JsonResult(Ok());
+        //}
 
 
 

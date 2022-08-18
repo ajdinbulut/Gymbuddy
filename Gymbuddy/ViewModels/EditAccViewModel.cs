@@ -14,6 +14,6 @@ namespace Gymbuddy.ViewModels
         public int RoleId { get; set; }
         public bool Selected { get; set; }
         public IEnumerable<UserRole> UserRoles { get; set; }
-        public IEnumerable<Role> Roles { get; set; }
+        public IEnumerable<SelectedRoleViewModel> selectedRole { get; set; }
     }
 }

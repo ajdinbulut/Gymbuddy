@@ -27,16 +27,15 @@
     @{
         int i = 0;
     }
-    @foreach(var obj in Model.UserRoles){
-    foreach(var item in Model.Roles){
+    @foreach(var item in Model.selectedRole){
    <div class="col-md-2">
-        <input type="hidden" asp-for="@Model.RoleId" name="[@i].RoleId"/>
-        <input asp-for="@Model.Selected" name="[@i].Selected" class="form-check-input" onclick="$(this).val(this.checked ? true : false)"/>
-       <label asp-for="@Model.Selected">@item.Name</label>
+        <input type="hidden" asp-for="@item.RoleId" name="selectedRole[@i].RoleId"/>
+        <input asp-for="@Model.Selected" name="selectedRole[@i].Selected" class="form-check-input" onclick="$(this).val(this.checked ? true : false)"/>
+       <label asp-for="@Model.Selected">@item.RoleName</label>
             </div>
             i++;
         }
-    }
+    
  
     <button type="submit" >Submit</button>
 </form>

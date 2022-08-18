@@ -60,6 +60,12 @@
         margin:5px;
         border-radius:0.5em;
     }
+     #likebtn{
+        border:none;
+        background-color:white;
+        margin-left:5px;
+        padding:5px 15px;
+    }
   
         </style>
 @*<a asp-action="AddCountry" asp-controller="Profile">Add Country</a>
@@ -127,7 +133,10 @@
               <img src="@post.ImageUrl"class="rounded mx-auto d-block" id="postimg">
             </div>
             <hr class="text-black">
-            
+            <div>
+                <button id="likebtn"><i class="fa-regular fa-thumbs-up"></i> Like</button>
+            </div>
+            <hr class="text-black">
             @foreach(var item in Model.Comments){
                 @if(item.Id != null){
              <div class="bg-white" id="comments">

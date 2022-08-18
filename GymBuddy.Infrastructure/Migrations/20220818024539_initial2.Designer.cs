@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GymBuddy.Infrastructure.Migrations
 {
     [DbContext(typeof(GymDB))]
-    [Migration("20220815153750_lol")]
-    partial class lol
+    [Migration("20220818024539_initial2")]
+    partial class initial2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -100,6 +100,9 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
+                    b.Property<int?>("Likes")
+                        .HasColumnType("integer");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
@@ -167,6 +170,9 @@ namespace GymBuddy.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("PostId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ProfilePhoto")
                         .HasColumnType("text");
 
@@ -175,6 +181,8 @@ namespace GymBuddy.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PostId");
 
                     b.ToTable("Users");
 
@@ -297,6 +305,13 @@ namespace GymBuddy.Infrastructure.Migrations
                         .HasForeignKey("UserRoleId");
                 });
 
+            modelBuilder.Entity("Gymbuddy.Core.Entities.User", b =>
+                {
+                    b.HasOne("GymBuddy.Core.Entities.Post", null)
+                        .WithMany("Users")
+                        .HasForeignKey("PostId");
+                });
+
             modelBuilder.Entity("Gymbuddy.Core.Entities.UserCountry", b =>
                 {
                     b.HasOne("Gymbuddy.Core.Entities.User", "User")
@@ -330,6 +345,8 @@ namespace GymBuddy.Infrastructure.Migrations
             modelBuilder.Entity("GymBuddy.Core.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.User", b =>

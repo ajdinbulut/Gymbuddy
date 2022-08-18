@@ -54,7 +54,15 @@ namespace Gymbuddy.Controllers
             editAcc.email = user.Email;
             editAcc.password = user.Password;
             editAcc.UserRoles = _unitOfWork.UserRole.GetAll(includeProperties:"Role,Roles").Where(x => x.UserId == user.Id);
-            editAcc.Roles = _unitOfWork.Role.GetAll();
+            var roles = _unitOfWork.Role.GetAll();
+            var userRoles = _db.UserRoles.Where(x => x.UserId == id);
+            editAcc.selectedRole = roles.Select(r => new SelectedRoleViewModel
+            {
+                RoleId = r.Id,
+                RoleName = r.Name,
+                Selected = userRoles.Any(ur=>ur.RoleId == r.Id)
+            });
+            ;
             return View(editAcc);
         }
         [HttpPost]
@@ -77,12 +85,12 @@ namespace Gymbuddy.Controllers
 
             //    }
             //}
-            foreach (var item in editAcc.Roles)
+            foreach (var item in editAcc.selectedRole)
             {
 
-                if (!_db.UserRoles.Any(x => x.UserId == editAcc.Id && x.RoleId == editAcc.RoleId))
+                if (!_db.UserRoles.Any(x => x.UserId == editAcc.Id && x.RoleId == editAcc.RoleId) && item.Selected == true)
                 {
-                    userRole.RoleId = item.Id;
+                    userRole.RoleId = item.RoleId;
 
                 }
             }
