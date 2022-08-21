@@ -124,9 +124,12 @@ display: block;
                 {
          <ul class="navbar-nav">
              <li class="nav-item">
-            <a class="nav-link" id="nav-item" asp-action="Index" asp-controller="Competition">Competition</a>
+                <a class="nav-link" id="nav-item" asp-action="Index" asp-controller="Competition">Competition</a>
              </li>
-                            </ul>
+             <li>
+                 <input id="search" type="text" placeholder="Search..." data-name="name">
+             </li>
+         </ul>
                             
            {
 
@@ -148,8 +151,8 @@ display: block;
                            
        <div class="dropdown">
            @{
-                                                     <button id="btn" class="dropdown-toggle" type="button" id="dropdownMenuButton"
-                                                         data-bs-toggle="dropdown"  aria-expanded="false">@user.Name</button>
+                                                         <button id="btn" class="dropdown-toggle" type="button" id="dropdownMenuButton"
+                                                             data-bs-toggle="dropdown"  aria-expanded="false">@user.Name</button>
            }
             <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
                  <li>
@@ -201,6 +204,12 @@ else{
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="https://kit.fontawesome.com/1f7c3e2723.js" crossorigin="anonymous"></script>
+    @section Scripts{
+        <script>
+            let search = document.getElementById("search");
+        </script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

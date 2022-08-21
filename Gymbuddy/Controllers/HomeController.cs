@@ -36,10 +36,11 @@ namespace Gymbuddy.Controllers
         public IActionResult Index()
         {
             PostViewModel PostVM = new PostViewModel();
-            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties:"User,Comments,PostLikes");
+            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties: "User,Comments,PostLikes");
             PostVM.PostLikes = _unitOfWork.PostLikes.GetAll();
             PostVM.User = _userManager.Get();
-            if (PostVM.Posts != null)
+         
+                if (PostVM.Posts != null)
             {
                 return View(PostVM);
             }
@@ -185,6 +186,18 @@ namespace Gymbuddy.Controllers
             _unitOfWork.Post.Update(post);
             _unitOfWork.Save();
 
+            return new JsonResult(Ok());
+        }
+        [HttpPost]
+        public JsonResult DislikePost(int PostId)
+        {
+            var user = _userManager.Get();
+            var postlikes = _unitOfWork.PostLikes.GetFirstOrDefault(x => x.PostId == PostId && x.UserId == user.Id);
+            var post = _unitOfWork.Post.GetFirstOrDefault(x => x.Id == PostId);
+            post.Likes--;
+            _unitOfWork.PostLikes.Remove(postlikes);
+            _unitOfWork.Post.Update(post);
+            _unitOfWork.Save();
             return new JsonResult(Ok());
         }
 

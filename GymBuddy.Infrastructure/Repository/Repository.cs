@@ -53,6 +53,7 @@ namespace GymBuddy.Infrastructure.Repository
             }
             return query.FirstOrDefault();
         }
+        
 
 
         public void Remove(T entitiy)

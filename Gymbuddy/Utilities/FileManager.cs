@@ -25,8 +25,7 @@
         }
         public string profilePhoto(IFormFile? file)
         {
-            if (file != null)
-            {
+            
                 string wwwRootPath = _hostEnviroment.WebRootPath;
                 string fileName = Guid.NewGuid().ToString();
                 var uploads = Path.Combine(wwwRootPath, @"images\profilePhotos");
@@ -37,8 +36,7 @@
                 }
                 return postFile = @"\images\profilePhotos\" + fileName + extension;
 
-            }
-            return null;
+           
         }
     }
 }

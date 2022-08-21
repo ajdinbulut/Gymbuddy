@@ -1,5 +1,6 @@
 ﻿using Gymbuddy.Core.Entities;
 using Gymbuddy.Infrastructure;
+using Gymbuddy.Utilities;
 using Gymbuddy.ViewModels;
 using GymBuddy.Core.Entities;
 using GymBuddy.Infrastructure.UnitOfWork;
@@ -13,11 +14,13 @@ namespace Gymbuddy.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager _userManager;
+        private readonly FileManager _fileManager;
 
-        public ProfileController(IUnitOfWork unitOfWork,UserManager userManager)
+        public ProfileController(IUnitOfWork unitOfWork,UserManager userManager,FileManager fileManager)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _fileManager = fileManager;
         }
         public IActionResult Index()
         {
@@ -106,6 +109,21 @@ namespace Gymbuddy.Controllers
             comment.PostId = id;
             _unitOfWork.Comment.Add(comment);
             _unitOfWork.Save();
+            _unitOfWork.Save();
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult ChangePhoto(ProfileViewModel profileVM,IFormFile? file)
+        {
+            var model = _userManager.Get();
+            var user = _unitOfWork.User.GetFirstOrDefault(x => x.Id == model.Id);
+            User obj = new User();
+            if (file != null)
+            {
+                obj.ProfilePhoto = _fileManager.profilePhoto(file);
+            }
+            user.ProfilePhoto = obj.ProfilePhoto;
+            _unitOfWork.User.Update(user);
             _unitOfWork.Save();
             return RedirectToAction("Index");
         }
