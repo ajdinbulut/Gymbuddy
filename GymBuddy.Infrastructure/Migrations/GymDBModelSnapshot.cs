@@ -98,7 +98,7 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
-                    b.Property<int?>("Likes")
+                    b.Property<int>("Likes")
                         .HasColumnType("integer");
 
                     b.Property<int>("UserId")
@@ -109,6 +109,29 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("GymBuddy.Core.Entities.PostLikes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostLikes");
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.Role", b =>
@@ -296,6 +319,25 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("GymBuddy.Core.Entities.PostLikes", b =>
+                {
+                    b.HasOne("GymBuddy.Core.Entities.Post", "Post")
+                        .WithMany("PostLikes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Gymbuddy.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Gymbuddy.Core.Entities.Role", b =>
                 {
                     b.HasOne("Gymbuddy.Core.Entities.UserRole", null)
@@ -343,6 +385,8 @@ namespace GymBuddy.Infrastructure.Migrations
             modelBuilder.Entity("GymBuddy.Core.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("PostLikes");
 
                     b.Navigation("Users");
                 });

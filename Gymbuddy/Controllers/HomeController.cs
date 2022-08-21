@@ -36,8 +36,9 @@ namespace Gymbuddy.Controllers
         public IActionResult Index()
         {
             PostViewModel PostVM = new PostViewModel();
-            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties:"User,Comments");
-            //PostVM.Comments = _unitOfWork.Comment.GetAll(includeProperties:"User,Post");
+            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties:"User,Comments,PostLikes");
+            PostVM.PostLikes = _unitOfWork.PostLikes.GetAll();
+            PostVM.User = _userManager.Get();
             if (PostVM.Posts != null)
             {
                 return View(PostVM);
@@ -168,16 +169,24 @@ namespace Gymbuddy.Controllers
             _unitOfWork.Save();
             return RedirectToAction("Index");
         }
-        //[HttpPost]
-        //public JsonResult LikePost(bool like,int id)
-        //{
-        //    if (like)
-        //    {
-        //        var post = _unitOfWork.Post.GetFirstOrDefault(x => x.Id == id);
-        //        post.Likes += 1;
-        //    }
-        //    return new JsonResult(Ok());
-        //}
+
+        [HttpPost]
+        public JsonResult LikePost(int PostId)
+        {
+
+            var user = _userManager.Get();
+            var post = _unitOfWork.Post.GetFirstOrDefault(x => x.Id == PostId);
+            PostLikes PostLikes = new PostLikes();
+            PostLikes.PostId = PostId;
+            PostLikes.UserId = user.Id;
+            post.Likes++;
+            _unitOfWork.PostLikes.Add(PostLikes);
+            _unitOfWork.Save();
+            _unitOfWork.Post.Update(post);
+            _unitOfWork.Save();
+
+            return new JsonResult(Ok());
+        }
 
 
 
