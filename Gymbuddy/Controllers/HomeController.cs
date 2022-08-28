@@ -35,10 +35,36 @@ namespace Gymbuddy.Controllers
 
         public IActionResult Index()
         {
+            var user = _userManager.Get();
             PostViewModel PostVM = new PostViewModel();
-            PostVM.Posts = _unitOfWork.Post.GetAll(includeProperties: "User,Comments,PostLikes");
+            var post = _unitOfWork.Post.GetAll(includeProperties:"PostLikes,User,Comments");
+            List<isPostLikedViewModel> isPostLiked = new List<isPostLikedViewModel>();  
+            foreach(var item in post)
+            {
+                
+                    isPostLikedViewModel model = new isPostLikedViewModel();
+                    model.PostLikes = item.PostLikes;
+                    model.ImageUrl = item.ImageUrl;
+                    model.Comments = item.Comments;
+                    model.PostId = item.Id;
+                    model.User = item.User;
+                    model.Likes = item.Likes;
+                    model.Description = item.Description;
+                    if (_db.PostLikes.Any(x => x.UserId == user.Id && x.PostId == item.Id))
+                    {
+                        model.isLiked = true;
+                    }
+                    else
+                    {
+                        model.isLiked = false;
+                    }
+                    isPostLiked.Add(model);
+                
+                
+            }
+            PostVM.Posts = isPostLiked;
             PostVM.PostLikes = _unitOfWork.PostLikes.GetAll();
-            PostVM.User = _userManager.Get();
+            PostVM.User = user;
          
                 if (PostVM.Posts != null)
             {
@@ -61,9 +87,53 @@ namespace Gymbuddy.Controllers
         }
         public IActionResult Details(int id)
         {
+            DetailsViewModel detailsVM = new DetailsViewModel();
+            detailsVM.PostLikes = _unitOfWork.PostLikes.GetAll();
+            var user = _userManager.Get();
+            var follow = _unitOfWork.Follow.GetAll();
+            var post = _unitOfWork.Post.GetAll(includeProperties: "PostLikes,User,Comments");
+            List<isPostLikedViewModel> isPostLiked = new List<isPostLikedViewModel>();
+            foreach (var item in post)
+            {
 
-            var user = _unitOfWork.User.GetFirstOrDefault(u => u.Id == id);
-            return View(user);
+                isPostLikedViewModel model = new isPostLikedViewModel();
+                model.PostLikes = item.PostLikes;
+                model.ImageUrl = item.ImageUrl;
+                model.Comments = item.Comments;
+                model.PostId = item.Id;
+                model.User = item.User;
+                model.Likes = item.Likes;
+                model.Description = item.Description;
+                if (_db.PostLikes.Any(x => x.UserId == user.Id && x.PostId == item.Id))
+                {
+                    model.isLiked = true;
+                }
+                else
+                {
+                    model.isLiked = false;
+                }
+                isPostLiked.Add(model);
+
+
+            }
+            detailsVM.Posts = isPostLiked;
+            detailsVM.User = _unitOfWork.User.GetFirstOrDefault(x => x.Id == id);
+            foreach (var item in follow)
+            {
+                if (user.Id == item.UserId && id == item.FollowingUserId)
+                {
+                   detailsVM.isFollowing = true;
+                }
+                else
+                {
+                    detailsVM.isFollowing = false;
+                }
+            }
+            if (detailsVM.Posts != null)
+            {
+                return View(detailsVM);
+            }
+            return View();
         }
         public IActionResult Register()
         {
@@ -128,7 +198,7 @@ namespace Gymbuddy.Controllers
         public IActionResult Logout()
         {
             _userManager.SignOut();
-            return RedirectToAction("Index");
+            return RedirectToAction("Privacy");
         }
         
         [HttpPost]
@@ -174,33 +244,74 @@ namespace Gymbuddy.Controllers
         [HttpPost]
         public JsonResult LikePost(int PostId)
         {
-
             var user = _userManager.Get();
-            var post = _unitOfWork.Post.GetFirstOrDefault(x => x.Id == PostId);
-            PostLikes PostLikes = new PostLikes();
-            PostLikes.PostId = PostId;
-            PostLikes.UserId = user.Id;
-            post.Likes++;
-            _unitOfWork.PostLikes.Add(PostLikes);
-            _unitOfWork.Save();
-            _unitOfWork.Post.Update(post);
-            _unitOfWork.Save();
+            if (!_db.PostLikes.Any(x => x.PostId == PostId && x.UserId == user.Id))
+            {
+                var post = _unitOfWork.Post.GetFirstOrDefault(x => x.Id == PostId);
+                PostLikes PostLikes = new PostLikes();
+                PostLikes.PostId = PostId;
+                PostLikes.UserId = user.Id;
+                post.Likes++;
+                _unitOfWork.PostLikes.Add(PostLikes);
+                _unitOfWork.Post.Update(post);
+                _unitOfWork.Save();
+                return new JsonResult(Ok(true));
+            }
+            else if (_db.PostLikes.Any(x => x.PostId == PostId && x.UserId == user.Id))
+            {
+                var postlikes = _unitOfWork.PostLikes.GetFirstOrDefault(x => x.PostId == PostId && x.UserId == user.Id);
+                var post = _unitOfWork.Post.GetFirstOrDefault(x => x.Id == PostId);
+                post.Likes--;
+                _unitOfWork.PostLikes.Remove(postlikes);
+                _unitOfWork.Post.Update(post);
+                _unitOfWork.Save();
+                return new JsonResult(Ok(false));
+            }
+            else return null;
 
-            return new JsonResult(Ok());
         }
+      
         [HttpPost]
-        public JsonResult DislikePost(int PostId)
+        public IActionResult Search(string search)
         {
+            UserSearch userSearch = new UserSearch();
             var user = _userManager.Get();
-            var postlikes = _unitOfWork.PostLikes.GetFirstOrDefault(x => x.PostId == PostId && x.UserId == user.Id);
-            var post = _unitOfWork.Post.GetFirstOrDefault(x => x.Id == PostId);
-            post.Likes--;
-            _unitOfWork.PostLikes.Remove(postlikes);
-            _unitOfWork.Post.Update(post);
-            _unitOfWork.Save();
-            return new JsonResult(Ok());
+            userSearch.Users = _db.Users.Where(x => x.Username == search).ToList();
+            var follow = _unitOfWork.Follow.GetAll();
+            foreach (var item in follow)
+            {
+                foreach (var obj in userSearch.Users) {
+                    if (user.Id == item.UserId &&  obj.Id == item.FollowingUserId)
+                    {
+                        userSearch.isFollowing = true;
+                    }
+                    else
+                    {
+                        userSearch.isFollowing = false;
+                    }
+                }
+            }
+            return View("Search",userSearch);
         }
-
+        public JsonResult Follow(int UserId,int FollowUserId)
+        {
+            if (!_db.Follows.Any(x => x.UserId == UserId && x.FollowingUserId == FollowUserId))
+            {
+                Follow follow = new Follow();
+                follow.UserId = UserId;
+                follow.FollowingUserId = FollowUserId;
+                _unitOfWork.Follow.Add(follow);
+                _unitOfWork.Save();
+                return new JsonResult(Ok(true));
+            }
+            else
+            {
+                var follow = _unitOfWork.Follow.GetFirstOrDefault(x => x.UserId == UserId && x.FollowingUserId == FollowUserId);
+                _unitOfWork.Follow.Remove(follow);
+                _unitOfWork.Save();
+                return new JsonResult(Ok(false));
+            }
+        }
 
 
     }

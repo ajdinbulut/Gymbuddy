@@ -1,0 +1,120 @@
+﻿@using GymBuddy.Infrastructure.Utilities
+@using Gymbuddy.ViewModels
+@model UserSearch
+@inject UserManager _userManager
+<style>
+    #profilePhoto{
+        width:100px;
+        height:100px;
+        border-radius:5%;
+        margin-top:10px;
+        margin-bottom:5px;
+        margin-left:5px;
+        display:inline;
+    }
+    h3{
+        color:white;
+        margin-left:5px;
+        display:inline;
+        position:relative;
+        bottom:20px;
+    }
+    a{
+        text-decoration: none;
+        color:white;
+    }
+    a:hover{
+        text-decoration:underline;
+        color:cadetblue;
+    }
+    #container2{
+        width:800px;
+        height:200px;
+        background-color: #141414;
+        margin:auto;
+        margin-top:30px;
+        padding-left:30px;
+        padding-top:5px;
+        border-radius:0.8rem;
+    }
+    span{
+        color:white;
+        font-size:16px;
+        float:right;
+        margin-top:20px;
+    }
+    #span1{
+    
+        margin-right:50px;
+    }
+    #span2{
+        margin-right:60px;
+    }
+    #span3{
+        margin-right:50px;
+    }
+
+    .followbtn {
+        float:right;
+        margin-right:10px;
+        background-color: grey;
+        color: white;
+        border-radius: 0.7rem;
+    }
+    
+
+
+    
+</style>
+@{
+    var user = _userManager.Get();
+}
+@foreach(var item in Model.Users){
+<div id="container2">
+    <img src="@item.ProfilePhoto" id="profilePhoto"/>
+        <h3><a asp-action="Details" asp-controller="Home" asp-route-id="@item.Id" >@item.Username</a></h3>
+    <span id="span2">Followers:</span>
+    <span id="span1">Following:</span>
+    <span id="span3">Posts:</span>
+    <hr>
+    <div>
+            @if (Model.isFollowing == true)
+            {
+                <button type="submit" class="followbtn" data-id="@user.Id" data-follow-id="@item.Id" style="background-color:white;color:lightblue" >Following</button>
+            }
+            else
+            {
+                <button type="submit" data-id="@user.Id" data-follow-id="@item.Id" class="followbtn">Follow</button>
+            }
+    </div>
+</div>
+}
+@section Scripts{
+    <script>
+        $(".followbtn").click(function(e){
+            let btn = $(this);
+            let userId = e.target.getAttribute('data-id');
+            let followUserId = e.target.getAttribute('data-follow-id');
+            $.ajax({
+                type:'Post',
+                url:'@Url.Action("Follow")',
+                dataType:"json",
+                data:{UserId:userId,FollowUserId:followUserId},
+                success:function(result){
+                    if(result.value == true){
+                    btn.css("background-color","white");
+                    btn.css("color","lightblue"),
+                    btn.html("Following");
+                    }else{
+                        btn.css("background-color","grey");
+                        btn.css("color","white");
+                        btn.html("Follow");
+                    }
+                },
+                error:function(req,status,error){
+                    console.log("ERROR");
+                }
+            })
+        })
+        </script>
+        }

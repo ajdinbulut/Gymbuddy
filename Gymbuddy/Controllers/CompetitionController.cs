@@ -39,9 +39,9 @@ namespace Gymbuddy.Controllers
         [HttpPost]
         public IActionResult CompetitionSignUp(CompetingUser user)
         {
-            var getId = _db.Users.FirstOrDefault(x=>x.Username == user.username);
+            var getId = _userManager.Get();
             CompetingUser model = new CompetingUser();
-            model.username = user.username;
+            model.username = getId.Username;
             model.bench = user.bench;
             model.deadlift = user.deadlift;
             model.squat = user.squat;

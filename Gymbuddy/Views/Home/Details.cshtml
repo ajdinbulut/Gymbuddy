@@ -1,3 +1,313 @@
-﻿@using Gymbuddy.Core.Entities
-@model User
-<h1>Hello @Model.Name</h1>
+﻿@using GymBuddy.Infrastructure.Utilities
+@using Gymbuddy.Core.Entities
+@using Gymbuddy.ViewModels
+@model DetailsViewModel
+@inject UserManager _userManager
+<style>    
+    #form1 {
+        border: solid 3px grey;
+        border-radius: 1em;
+        background-color: grey;
+    }
+
+    #post1 {
+        width: 50%;
+        height: 50%;
+        border: solid 3px grey;
+        margin-bottom: 3px;
+        border-radius: 0.5em;
+        background-color: grey;
+        margin:auto;
+    }
+
+    #post2 {
+        background-color: #AFAFAF;
+        margin: auto;
+    }
+    
+    p {
+        margin-left: 5px;
+    }
+    /* #dd1{
+
+            position:relative;
+            left:80%;
+
+        }*/
+    #container {
+        height: 100%;
+        width: 100%;
+        margin: auto;
+        padding: 0.5em;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    #postbtn {
+        color: black;
+        text-decoration: none;
+        border: none;
+        background-color: rgb(255,255,255);
+        padding: 0.2em 0.5em;
+        margin-top: 3px;
+    }
+
+        #postbtn:hover {
+            background-color: rgb(255,255,255,0.8);
+        }
+
+    #postimg {
+        height: 100%;
+        width: 100%;
+    }
+
+    #comments {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 5px;
+        border-radius: 0.5em;
+    }
+
+    #likebtn {
+        background-color: white;
+        margin-left: 5px;
+        padding: 2px 3px;
+        transition: all 0.3s ease 0s;
+        border: 1px solid black;
+    }
+
+        #likebtn:hover {
+            color: #0088a9;
+            background-color: rgb(255,255,255,0.9);
+        }
+
+    #ddbtn {
+        margin-left: auto;
+    }
+
+    .like {
+        color: blue;
+        border: 1px solid blue;
+        padding: 2px 3px
+    }
+
+    .unlike {
+        color: white;
+        background-color: grey;
+        border: 1px solid black;
+    }
+    #headerUser{
+        margin:0;
+        height:500px;
+        background-color: #141414;
+        margin-bottom:15px;
+    }
+    #profilePhoto{
+        width:170px;
+        height:170px;
+        border-radius:50%;
+    }
+   #imgUser{
+       display:flex;
+       flex-direction:row;
+       justify-content:space-evenly;
+   }
+    
+    #h2{
+        font-family: 'Aboreto', cursive;
+        padding-left:40px;
+
+    }
+    #img{
+        display:flex;
+        flex-direction:column;
+        margin-top:5rem;
+    }
+    #spans{
+        display:flex;
+        flex-direction:row-reverse;
+        font-family: 'Aboreto', cursive;
+        font-size: 20px;
+        margin-top:5rem;
+    }
+   
+    #span2,#span3{
+        margin-right:10px;
+    }
+    .followbtn{
+        float:right;
+        margin-right:350px;
+        padding: 3px 200px;
+        background-color:grey;
+        color:white;
+        border-radius:0.7rem;
+    }
+</style>
+@{
+    var user = _userManager.Get();
+}
+<div id="headerUser">
+    <section id="imgUser">
+        <div id="img">
+           <img src="@Model.User.ProfilePhoto" id="profilePhoto" />
+            <h2 id="h2">@Model.User.Name</h2>
+        </div>
+        <div id="spans">
+            <span id="span1">Followers:</span>
+            <span id="span2">Following:</span>
+            <span id="span3">Posts:</span>
+        </div>
+    </section>
+    <div>
+        @if (Model.isFollowing == true)
+        {
+            <button type="submit" class="followbtn" style="background-color:white;color:lightblue" data-follow-id="@Model.User.Id" data-id="@user.Id">Following</button>
+        }else{
+        <button type="submit" class="followbtn" data-follow-id="@Model.User.Id" data-id="@user.Id">Follow</button>
+        }
+    </div>
+    
+
+</div>
+  @foreach (var post in Model.Posts)
+    { 
+        <a hidden asp-for="@post.PostId" id="postId"></a>
+        <div id="post1" >
+           <div id="center">
+            <div id="post2">
+                <div style="display:flex;flex-direction:row;align-items:center;">
+                     <img src="@post.User.ProfilePhoto" style="width:30px;height:30px;border-radius:50%;margin-left:5px">
+                     <h3 class="ms-lg-2 d-inline">@post.User.Name</h3>
+                
+                   
+                    <div class="btn-group dropstart" id="ddbtn">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                         </button>
+                            <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
+                    @if (Model.User.Id == post.UserId)
+                    {
+                                <li > 
+                                    <a class="dropdown-item" asp-action="DeletePost" asp-controller="Home" asp-route-id="@post.PostId" >Delete </a>
+                                </li>
+                            }
+                            </ul>
+                    </div>
+                </div>
+                
+                <hr class="text-black">
+                <p class="ms-lg-2">@post.Description</p>
+                
+            </div>
+            <div >
+              <img src="@post.ImageUrl" class="rounded mx-auto d-block" id="postimg">
+            </div>
+            <hr class="text-black">
+            <div>
+                @if(post.isLiked == true){
+                        <button class="likebtn" style="color:white;background-color:grey;border:1px solid black;padding:2px 3px;" data-postId="@post.PostId"><i class="fa-regular fa-thumbs-up"></i> Like</button>
+                }else{
+                        <button class="likebtn" style="color:blue; border:1px solid blue;padding:2px 3px" data-postId="@post.PostId"><i class="fa-regular fa-thumbs-up"></i>Liked</button>
+                }
+            </div>
+            <hr class="text-black">
+
+            
+            @foreach(var item in post.Comments){
+                @if(@item.Id != null){
+             <div class="bg-white" id="comments" style="">
+                 <div class="bg-white" style="display:flex;flex-direction:row; align-items:center;">
+                     <div>
+                         <img src="@item.User.ProfilePhoto" style="width:30px;height:30px;border-radius:50%;margin-left:10px;margin-top:10px;display:inline">
+                    </div>
+                 <div>
+                   <h6 style="margin:5px;color:blue;" id="h6">@item.User.Name</h6>
+                 </div>
+                 </div>
+                 <span style="margin:5px" id="span">@item.Description</span>
+             </div>
+            
+           }
+            }
+                
+                <form asp-action="Comment" asp-controller="Home" asp-route-id="@post.PostId" method="post">
+            <div>
+                        
+                <textarea asp-for="Comment.Description" placeholder="Comment something.." class="form-control d-inline"></textarea>
+                <button type="submit"class="btn btn-dark d-inline">Submit</button>
+            </div>
+            </form>
+            </div>
+        </div>
+    }
+
+}
+</div>
+@section Scripts{
+    <script>
+        $(".followbtn").click(function(e){
+            let btn = $(this);
+            let userId = e.target.getAttribute('data-id');
+            let followUserId = e.target.getAttribute('data-follow-id');
+            $.ajax({
+                type:'Post',
+                url:'@Url.Action("Follow")',
+                dataType:"json",
+                data:{UserId:userId,FollowUserId:followUserId},
+                success:function(result){
+                    if(result.value == true){
+                    btn.css("background-color","white");
+                    btn.css("color","lightblue"),
+                    btn.html("Following");
+                    }else{
+                        btn.css("background-color","grey");
+                        btn.css("color","white");
+                        btn.html("Follow");
+                    }
+                },
+                error:function(req,status,error){
+                    console.log("ERROR");
+                }
+            })
+        })
+        
+        $(".likebtn").click(function(e){
+        let btn = $(this);
+        let postId = e.target.getAttribute('data-postId');
+    $.ajax({
+        type: 'POST',
+        url: '@Url.Action("LikePost")',
+        dataType: "json",
+        data: {PostId: postId },
+        success: function(result) {
+            console.log(result);
+            if(result.value == false){
+                console.log($(this));
+                btn.css("color","white");
+                btn.css("border","1px solid black");
+                btn.css("background-color","grey");
+                btn.css("padding","2px 3px");
+                btn.html("Like");
+            }
+            else{
+                  btn.css("color","blue");
+                  btn.css("border","1px solid blue");
+                  btn.css("padding","2px 3px");
+                  btn.html("Liked");
+                
+            }
+        },
+        error: function (req, status, error) {
+            console.log("there is error");
+                }
+        })
+        
+      
+    })
+    </script>
+
+    }

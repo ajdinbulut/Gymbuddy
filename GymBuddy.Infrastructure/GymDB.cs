@@ -25,6 +25,7 @@ namespace Gymbuddy.Infrastructure
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PostLikes> PostLikes { get; set; }
+        public DbSet<Follow> Follows { get; set; }
 
         private static void SeedData(ModelBuilder modelBuilder)
         {

@@ -22,6 +22,7 @@ namespace GymBuddy.Infrastructure.UnitOfWork
             Post = new PostRepository(_db);
             Comment = new CommentRepository(_db);
             PostLikes = new PostLikesRepository(_db);
+            Follow = new FollowRepository(_db);
         }
         public IUserRepository User { get; private set; }
 
@@ -32,6 +33,7 @@ namespace GymBuddy.Infrastructure.UnitOfWork
         public IPostRepository Post { get; private set; }
         public ICommentRepository Comment { get; private set; }
         public IPostLikesRepository PostLikes { get; private set; }
+        public IFollowRepository Follow { get; private set; }
 
         public void Save()
         {

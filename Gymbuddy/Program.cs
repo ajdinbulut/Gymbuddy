@@ -15,6 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("GymDBConnectio
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<FileManager>();
+builder.Services.AddScoped<PostManager>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();

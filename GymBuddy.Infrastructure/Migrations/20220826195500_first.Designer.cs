@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GymBuddy.Infrastructure.Migrations
 {
     [DbContext(typeof(GymDB))]
-    [Migration("20220821144929_lol")]
-    partial class lol
+    [Migration("20220826195500_first")]
+    partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -105,9 +105,6 @@ namespace GymBuddy.Infrastructure.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
-
-                    b.Property<bool?>("isLiked")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
