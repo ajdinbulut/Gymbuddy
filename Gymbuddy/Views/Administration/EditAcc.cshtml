@@ -5,30 +5,74 @@
     GymDB db = new GymDB();
     var role = db.Roles.ToList();
 }*@
+<style>
+    #formContainer{
+        width:500px;
+        height:600px;
+        background-color:#141414;
+        margin:auto;
+        margin-top:20px;
+        border:1px solid lightblue;
+        border-radius:1.5rem;
+    }
+    .formDiv{
+        margin:auto;
+        padding:5px;
+    }
+    #formDiv1{
+        margin-top:40px;
+    }
+    #btn{
+        margin-left:200px;
+        margin-top:10px;
+    }
+    #editUser{
+        text-align:center;
+        padding-top:10px;
+        font-family:'Aboreto', cursive;
+    }
+    .formDiv input[type="number"]{
+        border:3px solid lightblue;
+        border-radius:0.5rem;
+    }
+    .formDiv input[type="text"]{
+        border:3px solid lightblue;
+        border-radius:0.5rem;
+    }
+    .formDiv input[type="email"]{
+        border:3px solid lightblue;
+        border-radius:0.5rem;
+    }
+
+</style>
+<div id="formContainer">
 <form asp-action="EditAcc" asp-controller="Administration" method="post">
     
         <input type="hidden" name="id" class="form-control" value="@Model.Id"/>
+        <div id="editUser">
+            <h2>Edit User</h2>
+        </div>
    
-    <div class="col-md-2">
-        <input type="text" name="Name" class="form-control" value="@Model.Name" />
+    <div id="formDiv1" class="formDiv col-md-6">
+        <input id="text" type="text" name="Name" class="input form-control" value="@Model.Name" />
     </div>
-    <div class="col-md-2">
-        <input type="text" name="Username" class="form-control" value="@Model.Username"/>
+    <div class="formDiv col-md-6">
+            <input id="text" type="text" name="Username" class="input form-control" value="@Model.Username" />
     </div>
-    <div class="col-md-2">
-        <input type="number" name="Age" class="form-control" value="@Model.Age"/>
+    <div class="formDiv col-md-6">
+            <input id="number" type="number" name="Age" class="input form-control" value="@Model.Age" />
     </div>
-    <div class="col-md-2">
-        <input type="text" name="Password" class="form-control" value="@Model.password"/>
+    <div class="formDiv col-md-6">
+            <input id="text" type="text" name="Password" class="input form-control" value="@Model.password" />
     </div>
-    <div class="col-md-2">
-        <input type="email" name="Email" class="form-control" value="@Model.email"/>
+    <div class="formDiv col-md-6">
+            <input id="email" type="email" name="Email" class="input form-control" value="@Model.email" />
     </div>
     @{
         int i = 0;
     }
     @foreach(var item in Model.selectedRole){
-   <div class="col-md-2">
+   <div class="formDiv col-md-6">
         <input type="hidden" asp-for="@item.RoleId" name="selectedRole[@i].RoleId"/>
         <input asp-for="@Model.Selected" name="selectedRole[@i].Selected" class="form-check-input" onclick="$(this).val(this.checked ? true : false)"/>
        <label asp-for="@Model.Selected">@item.RoleName</label>
@@ -37,5 +81,6 @@
         }
     
  
-    <button type="submit" >Submit</button>
+    <button id="btn" type="submit" >Submit</button>
 </form>
+</div>

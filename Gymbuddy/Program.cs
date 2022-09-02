@@ -7,6 +7,7 @@ using System.Configuration;
 using Microsoft.AspNetCore.Identity;
 using GymBuddy.Infrastructure.Utilities;
 using Gymbuddy.Utilities;
+using Gymbuddy.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("GymDBConnection") ?? throw new InvalidOperationException("Connection string 'GymDBConnection' not found.");
@@ -19,6 +20,7 @@ builder.Services.AddScoped<PostManager>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
+builder.Services.AddSignalR();
 builder.Services.AddDbContext<GymDB>(options => options.UseNpgsql(
 "Host=localhost;Port=5432;Database=GymBuddy;Username=postgres;Password=postgres"   )) ;
 var app = builder.Build();
@@ -49,5 +51,7 @@ app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Privacy}/{id?}");
+app.MapHub<ConnectedUser>("/hubs/connectedUsers");
+app.MapHub<Class>("/hubs/class");
 
 app.Run();

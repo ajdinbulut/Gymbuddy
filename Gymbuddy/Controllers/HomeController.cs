@@ -12,6 +12,7 @@ using GymBuddy.Core.Entities;
 using GymBuddy.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Gymbuddy.Utilities;
+using Gymbuddy.Hubs;
 
 namespace Gymbuddy.Controllers
 {
@@ -38,16 +39,19 @@ namespace Gymbuddy.Controllers
             var user = _userManager.Get();
             PostViewModel PostVM = new PostViewModel();
             var post = _unitOfWork.Post.GetAll(includeProperties:"PostLikes,User,Comments");
-            List<isPostLikedViewModel> isPostLiked = new List<isPostLikedViewModel>();  
-            foreach(var item in post)
+            List<isPostLikedViewModel> isPostLiked = new List<isPostLikedViewModel>();
+            if (user != null)
             {
-                
+                foreach (var item in post)
+                {
+
                     isPostLikedViewModel model = new isPostLikedViewModel();
                     model.PostLikes = item.PostLikes;
                     model.ImageUrl = item.ImageUrl;
                     model.Comments = item.Comments;
                     model.PostId = item.Id;
                     model.User = item.User;
+                    model.UserId = item.UserId;
                     model.Likes = item.Likes;
                     model.Description = item.Description;
                     if (_db.PostLikes.Any(x => x.UserId == user.Id && x.PostId == item.Id))
@@ -59,8 +63,9 @@ namespace Gymbuddy.Controllers
                         model.isLiked = false;
                     }
                     isPostLiked.Add(model);
-                
-                
+
+
+                }
             }
             PostVM.Posts = isPostLiked;
             PostVM.PostLikes = _unitOfWork.PostLikes.GetAll();
@@ -87,9 +92,13 @@ namespace Gymbuddy.Controllers
         }
         public IActionResult Details(int id)
         {
+            var user = _userManager.Get();
+            if(user.Id == id)
+            {
+               return RedirectToAction("Index", "Profile");
+            }
             DetailsViewModel detailsVM = new DetailsViewModel();
             detailsVM.PostLikes = _unitOfWork.PostLikes.GetAll();
-            var user = _userManager.Get();
             var follow = _unitOfWork.Follow.GetAll();
             var post = _unitOfWork.Post.GetAll(includeProperties: "PostLikes,User,Comments");
             List<isPostLikedViewModel> isPostLiked = new List<isPostLikedViewModel>();
