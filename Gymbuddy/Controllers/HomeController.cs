@@ -53,6 +53,7 @@ namespace Gymbuddy.Controllers
                     model.User = item.User;
                     model.UserId = item.UserId;
                     model.Likes = item.Likes;
+                    model.DateCreated = item.dateCreated;
                     model.Description = item.Description;
                     if (_db.PostLikes.Any(x => x.UserId == user.Id && x.PostId == item.Id))
                     {
@@ -104,25 +105,26 @@ namespace Gymbuddy.Controllers
             List<isPostLikedViewModel> isPostLiked = new List<isPostLikedViewModel>();
             foreach (var item in post)
             {
-
-                isPostLikedViewModel model = new isPostLikedViewModel();
-                model.PostLikes = item.PostLikes;
-                model.ImageUrl = item.ImageUrl;
-                model.Comments = item.Comments;
-                model.PostId = item.Id;
-                model.User = item.User;
-                model.Likes = item.Likes;
-                model.Description = item.Description;
-                if (_db.PostLikes.Any(x => x.UserId == user.Id && x.PostId == item.Id))
+                if (item.UserId == id)
                 {
-                    model.isLiked = true;
+                    isPostLikedViewModel model = new isPostLikedViewModel();
+                    model.PostLikes = item.PostLikes;
+                    model.ImageUrl = item.ImageUrl;
+                    model.Comments = item.Comments;
+                    model.PostId = item.Id;
+                    model.User = item.User;
+                    model.Likes = item.Likes;
+                    model.Description = item.Description;
+                    if (_db.PostLikes.Any(x => x.UserId == user.Id && x.PostId == item.Id))
+                    {
+                        model.isLiked = true;
+                    }
+                    else
+                    {
+                        model.isLiked = false;
+                    }
+                    isPostLiked.Add(model);
                 }
-                else
-                {
-                    model.isLiked = false;
-                }
-                isPostLiked.Add(model);
-
 
             }
             detailsVM.Posts = isPostLiked;
@@ -164,10 +166,14 @@ namespace Gymbuddy.Controllers
 
             }
             model.Username = mod.username;
-            model.Password = mod.password;
+            var salt = Cryptography.Salt.Create();
+            var hash = Cryptography.Hash.Create(mod.password, salt);
+            model.PasswordSalt = salt;
+            model.PasswordHash = hash;
             model.Age = mod.age;
             model.Email = mod.email;
-            model.Name = mod.name;
+            model.FirstName = mod.firstName;
+            model.LastName = mod.lastName;
             model.ProfilePhoto = "/images/profilePhotos/profilephoto.jpg";
             _unitOfWork.User.Add(model);
             _unitOfWork.Save();
@@ -185,11 +191,11 @@ namespace Gymbuddy.Controllers
         }
         
         [HttpPost]
-        public IActionResult Login(User model)
+        public IActionResult Login(SignInViewModel model)
         {
 
-            var user = _unitOfWork.User.GetFirstOrDefault(x => x.Username == model.Username && x.Password == model.Password);
-            if (user != null)
+            var user = _unitOfWork.User.GetFirstOrDefault(x => x.Username == model.Username);
+            if (user != null && !Cryptography.Hash.Validate(model.Password, user.PasswordSalt, user.PasswordHash))
             {
                 _userManager.SignIn(user);
                 return RedirectToAction("Index");
@@ -223,8 +229,8 @@ namespace Gymbuddy.Controllers
             post.UserId = user.Id;
             post.ImageUrl = PostVM.Post.ImageUrl;
             post.Description = PostVM.Post.Description;
+            post.dateCreated = DateTime.UtcNow;
             _unitOfWork.Post.Add(post);
-            _unitOfWork.Save();
             _unitOfWork.Save();
 
             return RedirectToAction("Index");
@@ -321,7 +327,97 @@ namespace Gymbuddy.Controllers
                 return new JsonResult(Ok(false));
             }
         }
+        public JsonResult ConnectionId(string Id)
+        {
+            var user = _userManager.Get();
+            var connectionId = Id;
+            Connection connection = new Connection();
+            if (user != null)
+            {
+                connection.UserId = user.Id;
+                connection.ConnectionId = connectionId;
+                _unitOfWork.Connection.Add(connection);
+                _unitOfWork.Save();
 
+            }
+            return new JsonResult(Ok(Id));    
+        }
+        public JsonResult MessageNumber()
+        {
+            var user = _userManager.Get();
+            if (user != null)
+            {
+                NewMessagesViewModel newMessages = new NewMessagesViewModel();
+                var chat = _unitOfWork.Chat.GetAll(includeProperties:"UserSender").Where(x => x.UserReceiverId == user.Id && x.IsSeen == false);
+                List<Chat> chats = new List<Chat>();
+                foreach (var item in chat)
+                {
+                    Chat model = new Chat();
+                    model.Id = item.Id;
+                    model.UserReceiverId = item.UserReceiverId;
+                    model.UserReceiver = item.UserReceiver;
+                    model.UserSenderId = item.UserSenderId;
+                    model.UserSender = item.UserSender;
+                    model.SentAt = item.SentAt;
+                    model.Message = item.Message;
+                    newMessages.NewMessagesNumber++;
+                    chats.Add(model);
+                }
+                newMessages.Messages = chats;
+                return new JsonResult(Ok(newMessages));
+            }
+            return new JsonResult(Ok());
+        }
+        public JsonResult GetActiveUsers()
+        {
+            var user = _userManager.Get();
+            if(user != null)
+            {
+                var connectedUsers = _unitOfWork.Connection.GetAll(includeProperties: "User");
+                var follows = _unitOfWork.Follow.GetAll();
+                List<Connection> connected = new List<Connection>();
+                foreach(var item in connectedUsers)
+                {
+                    foreach(var obj in follows)
+                    {
+                        var model = new Connection();
+                        if(user.Id == obj.UserId && obj.FollowingUserId == item.UserId)
+                        {
+                            model.UserId = item.UserId;
+                            model.User = item.User;
+                            model.ConnectionId = item.ConnectionId;
+                            connected.Add(model);
+                        }
+
+                    }
+                }
+                return new JsonResult(connected);
+
+            }
+            return new JsonResult(Ok());
+        }
+        public JsonResult IsSeen()
+        {
+            var user = _userManager.Get();
+            var messages = _unitOfWork.Chat.GetAll().Where(x => x.UserReceiverId == user.Id && x.IsSeen == false);
+            foreach(var item in messages)
+            {
+                item.IsSeen = true;
+                _unitOfWork.Chat.Update(item);
+                _unitOfWork.Save();
+            }
+            return new JsonResult(Ok());
+        }
+        public JsonResult GetMessages(int id)
+        {
+            var user = _userManager.Get();
+            var messages = _unitOfWork.Chat.GetAll(includeProperties: "UserSender,UserReceiver").Where(x => (x.UserSenderId == id && x.UserReceiverId == user.Id) || (x.UserSenderId == user.Id && x.UserReceiverId == id));
+            if(user!= null)
+            {
+                return new JsonResult(Ok(messages));
+            }
+            return new JsonResult(Ok());
+        }
 
     }
 }

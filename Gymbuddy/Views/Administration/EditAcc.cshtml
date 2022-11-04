@@ -54,7 +54,10 @@
         </div>
    
     <div id="formDiv1" class="formDiv col-md-6">
-        <input id="text" type="text" name="Name" class="input form-control" value="@Model.Name" />
+        <input id="text" type="text" name="Name" class="input form-control" value="@Model.FirstName" />
+    </div>
+    <div id="formDiv1" class="formDiv col-md-6">
+        <input id="text" type="text" name="Name" class="input form-control" value="@Model.LastName" />
     </div>
     <div class="formDiv col-md-6">
             <input id="text" type="text" name="Username" class="input form-control" value="@Model.Username" />
@@ -63,10 +66,10 @@
             <input id="number" type="number" name="Age" class="input form-control" value="@Model.Age" />
     </div>
     <div class="formDiv col-md-6">
-            <input id="text" type="text" name="Password" class="input form-control" value="@Model.password" />
+            <input id="text" type="text" name="Password" class="input form-control" value="@Model.PasswordHash" />
     </div>
     <div class="formDiv col-md-6">
-            <input id="email" type="email" name="Email" class="input form-control" value="@Model.email" />
+            <input id="email" type="email" name="Email" class="input form-control" value="@Model.Email" />
     </div>
     @{
         int i = 0;

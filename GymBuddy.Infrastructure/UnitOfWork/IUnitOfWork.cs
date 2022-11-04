@@ -17,6 +17,8 @@ namespace GymBuddy.Infrastructure.UnitOfWork
         ICommentRepository Comment { get; }
         IPostLikesRepository PostLikes { get; }
         IFollowRepository Follow { get; }
+        IChatRepository Chat { get; }
+        IConnectionRepository Connection { get; }
         void Save();
     }
 }

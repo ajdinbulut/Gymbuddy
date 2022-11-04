@@ -8,6 +8,7 @@ namespace Gymbuddy.ViewModels
         public int PostId { get; set; }
         public string Description { get; set; }
         public string? ImageUrl { get; set; }
+        public DateTime? DateCreated { get; set; }
         public int Likes { get; set; }
         public bool? isLiked { get; set; }
         public int UserId { get; set; }

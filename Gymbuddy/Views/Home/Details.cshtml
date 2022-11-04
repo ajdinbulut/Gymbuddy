@@ -152,11 +152,12 @@
 @{
     var user = _userManager.Get();
 }
+
 <div id="headerUser">
     <section id="imgUser">
         <div id="img">
            <img src="@Model.User.ProfilePhoto" id="profilePhoto" />
-            <h2 id="h2">@Model.User.Name</h2>
+            <h2 id="h2">@Model.User.FirstName @Model.User.LastName</h2>
         </div>
         <div id="spans">
             <span id="span1">Followers:</span>
@@ -167,7 +168,9 @@
     <div>
         @if (Model.isFollowing == true)
         {
+            
             <button type="submit" class="followbtn" style="background-color:white;color:lightblue" data-follow-id="@Model.User.Id" data-id="@user.Id">Following</button>
+            <a asp-action="Index" asp-controller="Chat" asp-route-id="@Model.User.Id">Send Message</a>
         }else{
         <button type="submit" class="followbtn" data-follow-id="@Model.User.Id" data-id="@user.Id">Follow</button>
         }
@@ -183,7 +186,7 @@
             <div id="post2">
                 <div style="display:flex;flex-direction:row;align-items:center;">
                      <img src="@post.User.ProfilePhoto" style="width:30px;height:30px;border-radius:50%;margin-left:5px">
-                     <h3 class="ms-lg-2 d-inline">@post.User.Name</h3>
+                     <h3 class="ms-lg-2 d-inline">@post.User.FirstName @post.User.LastName</h3>
                 
                    
                     <div class="btn-group dropstart" id="ddbtn">
@@ -226,7 +229,7 @@
                          <img src="@item.User.ProfilePhoto" style="width:30px;height:30px;border-radius:50%;margin-left:10px;margin-top:10px;display:inline">
                     </div>
                  <div>
-                   <h6 style="margin:5px;color:blue;" id="h6">@item.User.Name</h6>
+                   <h6 style="margin:5px;color:blue;" id="h6">@item.User.FirstName @item.User.LastName</h6>
                  </div>
                  </div>
                  <span style="margin:5px" id="span">@item.Description</span>
@@ -249,6 +252,7 @@
 }
 </div>
 @section Scripts{
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
         $(".followbtn").click(function(e){
             let btn = $(this);

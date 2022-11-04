@@ -112,52 +112,100 @@ color: #bbb;
 text-decoration: none;
 cursor: pointer;
 }
-#changephoto{
+.modal{
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(255,255,255,0.5); /* Black w/ opacity */
+}
+#container2{
+    display:flex;
+    background-color:rgba(255,255,255,0.1);
+    margin-bottom:10px;
+    height:400px;
+    width:80%;
+    margin-left:10%;
+}
+#userPhoto{
+    width:200px;
+    height:200px;
+    border: 1px solid #2ecc71;
+    border-radius:50%;
+
+}
+#userInfo{
+    flex:1;
     display:flex;
     flex-direction:column;
-    width:25a0px;
-    height:200px;
-    margin-left:30px;
     align-items:center;
-    justify-content:center;
-    background-color:white;
+    width:auto;
+    padding-top:30px;
 }
+#info{
+    flex:2;
+    font-size:26px;
+    font-weight:500;
+    padding-top:20px;
+}
+
+#h2{
+    color:black;
+}
+.span{
+    padding-right:30px;
+}
+#myBtn{
+    border:none;
+    background-color:lightblue;
+    padding: 10px 5px;
+    border-radius:0.5rem;
+}
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+        .modal-content {
+      background-color: inherit;
+      margin: 15% auto; /* 15% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+    }
         </style>
 @*<a asp-action="AddCountry" asp-controller="Profile">Add Country</a>
 *@
 
-<section class="vh-50 align-items-center d-inline-block" style="width:20%" >
-  <div class="container py-5 h-100">
-    <div class="row d-flex ">
-        <div class="card w-100" style="border-radius: 15px; ">
-          <div class="card-body p-4">
-            <div class="d-flex text-black">
-              
-                <div class="">
-                    
-                  <img src="@Model.User.ProfilePhoto"  class=" rounded mx-auto d-block" style="margin-bottom:5px"/>
-                     
-                  <div class="text-center">
-                <h5 class="mb-1 "><b>@Model.User.Name</b></h5>
-                <p class="mb-1">Username:@Model.User.Username</p>
-                <p class="mb-1">Age:@Model.User.Age</p>
-                <p class="mb-1">Email:@Model.User.Email</p>
-               @*@if(@Model.CountryName != null){
-                <p class="mb-1">Country:@Model.CountryName</p>
-                }*@
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<div id="container2">
+    <section id="userInfo">
+        <img src="@Model.User.ProfilePhoto" id="userPhoto" />
+        <h2 id="h2">@Model.User.FirstName @Model.User.LastName</h2>
+        <button id="myBtn">Change Photo</button>
+    </section>
+    <section id="info">
+        <span class="span">Posts:</span>
+        <span class="span">Followers:</span>
+        <span class="span">Following:</span>
+    </section>
 
-<div id="changephoto">
 
-    <h3>Change Photo</h3>
+    <div id="changephoto" class="modal" >
+        <div class="modal-content">
+        <span class="close">&times;</span>
     <form asp-action="ChangePhoto" asp-controller="Profile" method="post" enctype="multipart/form-data" id="modal-content">
         <div class="col-md-2">
        <label hidden asp-for="User.ProfilePhoto"></label>
@@ -165,7 +213,11 @@ cursor: pointer;
         </div>
         <button type="submit" class="btn btn-primary" style="margin:10px">Submit</button>
     </form>
+        </div>
 </div>
+</div>
+
+
 
 <div class="h-100 w-75 mx-auto d-block">
   <div class="d-flex flex-column align-items-center">
@@ -175,23 +227,23 @@ cursor: pointer;
             {
             <div id="post1" class="mt-3 mb-3 ms-lg-2 w-50 h-50 shadow-lg" style="height:600px;width:500px">
             <div id="post2">
-                <h3 class="ms-lg-2 d-inline">@post.User.Name</h3>
+                <h3 class="ms-lg-2 d-inline">@post.User.FirstName @post.User.LastName</h3>
                 @{
                     var user = _userManager.Get();
                    
-                                                                                                       <div class="btn-group dropstart float-end">
-                                                                                                              <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                                                                                                     
-                                                                                                              </button>
-                                                                                                           <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
-                                                                                                           @if (user.Id == post.UserId)
+                           <div class="btn-group dropstart float-end">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                   
+                           </button>
+                        <ul class="dropdown-menu" aria-labelledby="#dropdownMenuButton">
+                                @if (user.Id == post.UserId)
                     {
-                                                                                                                 <li > 
-                                                                                                                     <a class="dropdown-item" asp-action="DeletePost" asp-controller="Home" asp-route-id="@post.Id" >Delete </a>
-                                                                                                                </li>
+                                   <li > 
+                                      <a class="dropdown-item" asp-action="DeletePost" asp-controller="Home" asp-route-id="@post.Id" >Delete </a>
+                                   </li>
                     }
-                                                                                                           </ul>
-                                                                                                       </div>
+                         </ul>
+                           </div>
                     
                 }
                 <hr class="text-black">
@@ -209,7 +261,7 @@ cursor: pointer;
             @foreach(var item in Model.Comments){
                 @if(item.Id != null){
              <div class="bg-white" id="comments">
-                        <h6 style="margin:3px">@item.User.Name</h6>
+                        <h6 style="margin:3px">@item.User.FirstName @item.User.LastName</h6>
                         <span style="margin:3px">@item.Description</span>
              </div>
            }
@@ -229,15 +281,17 @@ cursor: pointer;
   </div>
 </div>
 @section Scripts{
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
-        var modal = document.getElementById("myModal");
-        var form = document.getElementById("change");
-        form.onclick = function(){
-        modal.style.display = "block";
-        }
+        var change = document.getElementById("myBtn");
+        $("#myBtn").click(function(){
+            var div = document.getElementById("changephoto");
+            div.style.display = "block";
+        })
         var span = document.getElementsByClassName("close")[0];
         span.onclick = function () {
-        modal.style.display = "none";
+            var div = document.getElementById("changephoto");
+            div.style.display = "none";
         }
     </script>
 }

@@ -15,7 +15,6 @@ namespace Gymbuddy.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseSerialColumns();
-            SeedData(modelBuilder);
         }
         public DbSet<User> Users { get; set; }
         public DbSet<CompetingUser> CompetingUsers { get; set; }
@@ -26,6 +25,8 @@ namespace Gymbuddy.Infrastructure
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PostLikes> PostLikes { get; set; }
         public DbSet<Follow> Follows { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<Connection> Connection { get; set; }
 
         private static void SeedData(ModelBuilder modelBuilder)
         {
@@ -33,9 +34,11 @@ namespace Gymbuddy.Infrastructure
                 new User
                 {
                     Id = 1,
-                    Name = "admin",
+                    FirstName = "Ajdin",
+                    LastName = "Bulut",
                     Username = "admin",
-                    Password = "admin123",
+                    PasswordHash = "WudiKaNkYoEQks/Svc3U21g6iQxpmyr3ndgx4Iauxpo=",
+                    PasswordSalt = "W3/rItNCU3JGwjC/mAsgLg==",
                     Age = 21,
                     Email = "ajdinbulut@gmail.com",
 

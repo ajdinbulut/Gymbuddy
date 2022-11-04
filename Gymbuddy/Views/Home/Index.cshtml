@@ -14,6 +14,7 @@
         border-radius:1em;
         background-color:grey;
             }
+      
     #post1{
         width:50%;
         height:50%;
@@ -42,9 +43,7 @@
     }*/
     #container{
         height:100%;
-        width:75%;
-        margin:auto;
-        padding:0.5em;
+        width:100%;
     }
     *{
         box-sizing:border-box;
@@ -104,18 +103,59 @@
         color:lightblue;
         text-decoration:underline;
     }
+
+    #chats {
+        height: 100vh;
+        width: 300px;
+        display: inline;
+        position: fixed;
+        top: 66px;
+        overflow: scroll;
+        background-color: grey;
+    }
+
+    #profileInChat {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 5px;
+        margin-top: 5px;
+        margin-left: 5px;
+        border: 1px solid lightgreen;
+    }
+    #chat :hover {
+        cursor: pointer;
+    }
+    #chat li{ 
+    height:40px;
+    width:100%;
+    border-bottom: 1px solid black;
+}
+#chat {
+    color:green;
+}
+#chat li a{
+    color:green;
+}
+#postsContainer{
+    margin:auto;
+    margin-top:70px;
+}
   
         </style>
 @if(TempData["success"] != null){
        <h2>@TempData["success"]</h2>
 }
-
- <div class="bg-dark d-block mt-0 mb-0 d-flex flex-column align-items-center" id="container">
-
-@if (_userManager.isSignedIn())
+@if(_userManager.isSignedIn())
 {
-    <script src="~/js/signalr.js"></script>
-    <script src="~/js/usersCount.js"></script>
+  <div id="chats">
+    <ul id="chat">
+    </ul>
+  </div>
+
+    <div class="bg-dark d-block mb-0 d-flex flex-column align-items-center w-50" id="postsContainer">
+
+
     <form class="w-75" asp-action="Post" asp-controller="Home" method="post" enctype="multipart/form-data">
         <div class=" p-3 mt-4"  id="form1">
             <input type="hidden" name="id" />
@@ -138,8 +178,7 @@
             <div id="post2">
                 <div style="display:flex;flex-direction:row;align-items:center;">
                      <img src="@post.User.ProfilePhoto" style="width:30px;height:30px;border-radius:50%;margin-left:5px">
-                        <a asp-action="Details" asp-controller="Home" asp-route-id="@post.UserId"><h3 class="ms-lg-2 d-inline">@post.User.Name</h3></a>
-                
+                        <a asp-action="Details" asp-controller="Home" asp-route-id="@post.UserId"><h3 class="ms-lg-2 d-inline">@post.User.FirstName @post.User.LastName</h3></a>
                    
                     <div class="btn-group dropstart" id="ddbtn">
                         <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -182,7 +221,7 @@
                          <img src="@item.User.ProfilePhoto" style="width:30px;height:30px;border-radius:50%;margin-left:10px;margin-top:10px;display:inline">
                     </div>
                  <div>
-                   <h6 style="margin:5px;color:blue;" id="h6">@item.User.Name</h6>
+                   <h6 style="margin:5px;color:blue;" id="h6">@item.User.FirstName @item.User.LastName</h6>
                  </div>
                  </div>
                  <span style="margin:5px" id="span">@item.Description</span>
@@ -200,40 +239,29 @@
             </form>
         </div>
     }
-
+    </div>
 }
-</div>
-@section Scripts{
-    <script>
-        $(document).ready(function () {
-            
-        });
-        //$("#select option").remove();
-        //$("#searchItem").change(function (e) {
-        //    let search = $(this).val();
-        //    $.ajax({
-        //        type: "POST",
-        //        url: '@Url.Action("Search","Home")',
-        //        data: { search: search },
-        //        dataType: "json",
-        //        success: function (result) {
-        //            if (result != null) {
-        //                console.log(result);
-        //                $.each(result, function (key, value) {
-        //                    $.each(value,function(key,obj){
-        //                        $("#select").append($("<option><a asp-action='Details' asp-controller='Home' asp-route-id="obj.id">" + obj.username + "</a></option > "));
-        //                    })
 
-        //                });
-        //            }
-                    
-        //        },
-        //        error: function (req, error) {
-        //            console.log("there is an error");
-        //        }
-        //    })
-        //})
-        $(".likebtn").click(function(e){
+@section Scripts{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(document).ready(function (){
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetActiveUsers","Home")',
+                dataType: "json",
+                success: function (result) {
+                    console.log(result);
+                    $.each(result, function (i, item) {
+                        $("#chat").append("<li id='chatList' data-id=' " + item.user.id + "'><a href='https://localhost:44354/Chat/Index/" + item.user.id + "'><img src=' " + item.user.profilePhoto + " ' id='profileInChat' /> " + item.user.firstName + " " + item.user.lastName + "</a></li>");
+
+                    })
+                },
+                error: function (req, status, error) {
+
+                }
+            })
+             $(".likebtn").click(function(e){
         let likes = document.getElementById("likes");
         let btn = $(this);
         let postId = e.target.getAttribute('data-postId');
@@ -267,17 +295,7 @@
         
       
     })
-    
-    
-    
-        
-            
-      
-
-        
-        
-
-
+        })
 
     </script>
 }

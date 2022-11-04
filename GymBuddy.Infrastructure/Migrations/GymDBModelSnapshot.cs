@@ -17,10 +17,43 @@ namespace GymBuddy.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "6.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseSerialColumns(modelBuilder);
+
+            modelBuilder.Entity("GymBuddy.Core.Entities.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("SentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserReceiverId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserSenderId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserReceiverId");
+
+                    b.HasIndex("UserSenderId");
+
+                    b.ToTable("Chats");
+                });
 
             modelBuilder.Entity("GymBuddy.Core.Entities.Comment", b =>
                 {
@@ -83,6 +116,28 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.ToTable("CompetingUsers");
                 });
 
+            modelBuilder.Entity("GymBuddy.Core.Entities.Connection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConnectionId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Connection");
+                });
+
             modelBuilder.Entity("GymBuddy.Core.Entities.Follow", b =>
                 {
                     b.Property<int>("Id")
@@ -126,6 +181,9 @@ namespace GymBuddy.Infrastructure.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("dateCreated")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -177,18 +235,6 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.HasIndex("UserRoleId");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "User"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.User", b =>
@@ -206,11 +252,19 @@ namespace GymBuddy.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -229,17 +283,6 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Age = 21,
-                            Email = "ajdinbulut@gmail.com",
-                            Name = "admin",
-                            Password = "admin123",
-                            Username = "admin"
-                        });
                 });
 
             modelBuilder.Entity("Gymbuddy.Core.Entities.UserCountry", b =>
@@ -285,20 +328,25 @@ namespace GymBuddy.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            RoleId = 1,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            RoleId = 2,
-                            UserId = 1
-                        });
+            modelBuilder.Entity("GymBuddy.Core.Entities.Chat", b =>
+                {
+                    b.HasOne("Gymbuddy.Core.Entities.User", "UserReceiver")
+                        .WithMany()
+                        .HasForeignKey("UserReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Gymbuddy.Core.Entities.User", "UserSender")
+                        .WithMany()
+                        .HasForeignKey("UserSenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserReceiver");
+
+                    b.Navigation("UserSender");
                 });
 
             modelBuilder.Entity("GymBuddy.Core.Entities.Comment", b =>
@@ -329,6 +377,17 @@ namespace GymBuddy.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("GymBuddy.Core.Entities.Connection", b =>
+                {
+                    b.HasOne("Gymbuddy.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GymBuddy.Core.Entities.Follow", b =>

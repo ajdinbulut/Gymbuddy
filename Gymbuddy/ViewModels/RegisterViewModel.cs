@@ -7,7 +7,8 @@ namespace Gymbuddy.ViewModels
         public string username { get; set; }
         public string password { get; set; }
         public string email { get; set; }
-        public string name { get; set; }     
+        public string firstName { get; set; }     
+        public string lastName { get; set; }     
         public int age { get; set; }
         public string ProfileURL { get; set; }
         public int RoleId { get; set; }

@@ -15,12 +15,15 @@ namespace Gymbuddy.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager _userManager;
         private readonly FileManager _fileManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProfileController(IUnitOfWork unitOfWork,UserManager userManager,FileManager fileManager)
+
+        public ProfileController(IUnitOfWork unitOfWork,UserManager userManager,FileManager fileManager,IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _fileManager = fileManager;
+            _httpContextAccessor = httpContextAccessor;
         }
         public IActionResult Index()
         {
@@ -72,15 +75,7 @@ namespace Gymbuddy.Controllers
             var model = _userManager.Get();
             return View(model);
         }
-        [HttpPost]
-        public IActionResult EditPW(string password, int id)
-        {
-            var model = _unitOfWork.User.GetFirstOrDefault(u=>u.Id == id);
-            model.Password = password;
-            _unitOfWork.User.Update(model);
-            _unitOfWork.Save();
-            return RedirectToAction("Index", "Home");
-        }
+      
       
         public IActionResult AddCountry()
         {
@@ -123,6 +118,8 @@ namespace Gymbuddy.Controllers
                 obj.ProfilePhoto = _fileManager.profilePhoto(file);
             }
             user.ProfilePhoto = obj.ProfilePhoto;
+            _userManager.SignOut();
+            _userManager.SignIn(user);
             _unitOfWork.User.Update(user);
             _unitOfWork.Save();
             return RedirectToAction("Index");

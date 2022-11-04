@@ -1,14 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace GymBuddy.Infrastructure.Migrations
 {
-    public partial class first : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Chats",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    UserSenderId = table.Column<int>(type: "integer", nullable: false),
+                    UserReceiverId = table.Column<int>(type: "integer", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    IsSeen = table.Column<bool>(type: "boolean", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chats", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
@@ -43,6 +61,34 @@ namespace GymBuddy.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Connection",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ConnectionId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Connection", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Follows",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    FollowingUserId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Follows", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PostLikes",
                 columns: table => new
                 {
@@ -65,6 +111,7 @@ namespace GymBuddy.Infrastructure.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     ImageUrl = table.Column<string>(type: "text", nullable: true),
                     Likes = table.Column<int>(type: "integer", nullable: false),
+                    dateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -78,12 +125,14 @@ namespace GymBuddy.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
                     Age = table.Column<int>(type: "integer", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     ProfilePhoto = table.Column<string>(type: "text", nullable: true),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    PasswordSalt = table.Column<string>(type: "text", nullable: false),
                     PostId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -156,28 +205,15 @@ namespace GymBuddy.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Name", "UserRoleId" },
-                values: new object[,]
-                {
-                    { 1, "User", null },
-                    { 2, "Admin", null }
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Chats_UserReceiverId",
+                table: "Chats",
+                column: "UserReceiverId");
 
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "Age", "Email", "Name", "Password", "PostId", "ProfilePhoto", "Username" },
-                values: new object[] { 1, 21, "ajdinbulut@gmail.com", "admin", "admin123", null, null, "admin" });
-
-            migrationBuilder.InsertData(
-                table: "UserRoles",
-                columns: new[] { "Id", "RoleId", "UserId" },
-                values: new object[,]
-                {
-                    { 1, 1, 1 },
-                    { 2, 2, 1 }
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Chats_UserSenderId",
+                table: "Chats",
+                column: "UserSenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_PostId",
@@ -192,6 +228,21 @@ namespace GymBuddy.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_CompetingUsers_UserId",
                 table: "CompetingUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Connection_UserId",
+                table: "Connection",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Follows_FollowingUserId",
+                table: "Follows",
+                column: "FollowingUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Follows_UserId",
+                table: "Follows",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -235,6 +286,22 @@ namespace GymBuddy.Infrastructure.Migrations
                 column: "PostId");
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Chats_Users_UserReceiverId",
+                table: "Chats",
+                column: "UserReceiverId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Chats_Users_UserSenderId",
+                table: "Chats",
+                column: "UserSenderId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Comments_Posts_PostId",
                 table: "Comments",
                 column: "PostId",
@@ -253,6 +320,30 @@ namespace GymBuddy.Infrastructure.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_CompetingUsers_Users_UserId",
                 table: "CompetingUsers",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Connection_Users_UserId",
+                table: "Connection",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Follows_Users_FollowingUserId",
+                table: "Follows",
+                column: "FollowingUserId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Follows_Users_UserId",
+                table: "Follows",
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
@@ -293,8 +384,8 @@ namespace GymBuddy.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Users_Posts_PostId",
-                table: "Users");
+                name: "FK_Posts_Users_UserId",
+                table: "Posts");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_UserRoles_Users_UserId",
@@ -305,10 +396,19 @@ namespace GymBuddy.Infrastructure.Migrations
                 table: "Roles");
 
             migrationBuilder.DropTable(
+                name: "Chats");
+
+            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "CompetingUsers");
+
+            migrationBuilder.DropTable(
+                name: "Connection");
+
+            migrationBuilder.DropTable(
+                name: "Follows");
 
             migrationBuilder.DropTable(
                 name: "PostLikes");
@@ -317,10 +417,10 @@ namespace GymBuddy.Infrastructure.Migrations
                 name: "UserCountries");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");

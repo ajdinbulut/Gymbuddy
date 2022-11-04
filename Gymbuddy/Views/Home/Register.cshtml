@@ -4,7 +4,7 @@
     body{
     background-color: rgb(27, 32, 36);
 }
-#container{
+#container2{
     width: 40%;
     height: 750px;
     background-color: rgb(25, 25, 25);
@@ -27,7 +27,20 @@
     height: 100px;
     margin-top: 5px;
 }
-#name input[type="text"]{
+#firstName input[type="text"]{
+    width: 50%;
+    height: 80px;
+    font-size: 0.8em;
+    margin-left: 25%;
+    margin-top: 4%;
+    border-radius: 2em;
+    border:3px solid #3498db;
+    text-align: center;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    color: white;
+
+}#lastName input[type="text"]{
     width: 50%;
     height: 80px;
     font-size: 0.8em;
@@ -126,7 +139,10 @@
     background-color: rgb(25, 25, 25);
     color: white;
 }
-#name input[type="text"]:hover{
+#firstName input[type="text"]:hover{
+    box-shadow: 7px 7px 7px #000000;
+    opacity: 0.8;
+}#lastName input[type="text"]:hover{
     box-shadow: 7px 7px 7px #000000;
     opacity: 0.8;
 }
@@ -163,7 +179,11 @@ media only screen and (max-width:600px) {
         margin: 0;
         padding-top: 50px;
     }
-#name input[type="text"]{
+#firstName input[type="text"]{
+        width: 80%;
+        margin-left: 10%;
+        margin-right: 10%;
+}#lastName input[type="text"]{
         width: 80%;
         margin-left: 10%;
         margin-right: 10%;
@@ -197,13 +217,16 @@ media only screen and (max-width:600px) {
 }
 }
 </style></>
-<div id="container">
+<div id="container2">
         <div id="log">
             <h1 style="font-family: 'Tapestry';     letter-spacing: 10px;">Register</h1>
         </div>
         <form asp-action="Register" asp-controller="Home" method="post">
-            <div id="name">
-                <input type="text" asp-for="@Model.name" placeholder="Name">
+            <div id="firstName">
+                <input type="text" asp-for="@Model.firstName" placeholder="First Name">
+            </div>
+            <div id="lastName">
+                <input type="text" asp-for="@Model.lastName" placeholder="Last Name">
             </div>
             <div id="userName">
                 <input type="text" asp-for="@Model.username" placeholder="Username">

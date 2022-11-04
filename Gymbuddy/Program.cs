@@ -22,7 +22,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<GymDB>(options => options.UseNpgsql(
-"Host=localhost;Port=5432;Database=GymBuddy;Username=postgres;Password=postgres"   )) ;
+"Host=localhost;Port=5432;Database=GymbuddyNew;Username=postgres;Password=postgres"   )) ;
 var app = builder.Build();
 
     //........
@@ -52,6 +52,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Privacy}/{id?}");
 app.MapHub<ConnectedUser>("/hubs/connectedUsers");
-app.MapHub<Class>("/hubs/class");
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();

@@ -35,7 +35,8 @@ namespace Gymbuddy.Controllers
                 AdministrationViewModel obj = new AdministrationViewModel();
 
                 obj.Id = items.Id;
-                obj.Name = items.Name;
+                obj.FirstName = items.FirstName;
+                obj.LastName = items.LastName;
                 obj.Age = items.Age;
                 obj.Username = items.Username;
                 obj.UserRoles = items.UserRoles;
@@ -48,11 +49,11 @@ namespace Gymbuddy.Controllers
             var user = _unitOfWork.User.GetFirstOrDefault(u => u.Id == id);
             EditAccViewModel editAcc = new EditAccViewModel();
             editAcc.Id = user.Id;
-            editAcc.Name = user.Name;
+            editAcc.FirstName = user.FirstName;
+            editAcc.LastName = user.LastName;
             editAcc.Username = user.Username;
             editAcc.Age = user.Age;
-            editAcc.email = user.Email;
-            editAcc.password = user.Password;
+            editAcc.Email = user.Email;
             editAcc.UserRoles = _unitOfWork.UserRole.GetAll(includeProperties:"Role,Roles").Where(x => x.UserId == user.Id);
             var roles = _unitOfWork.Role.GetAll();
             var userRoles = _db.UserRoles.Where(x => x.UserId == id);
@@ -70,11 +71,12 @@ namespace Gymbuddy.Controllers
         {
             UserRole userRole = new UserRole();
             var user = _unitOfWork.User.GetFirstOrDefault(u=>u.Id== editAcc.Id);
-            user.Name = editAcc.Name;
+            user.FirstName = editAcc.FirstName;
+            user.LastName = editAcc.LastName;
             user.Username = editAcc.Username;
             user.Age = editAcc.Age;
-            user.Password = editAcc.password;
-            user.Email = editAcc.email;
+            user.PasswordHash = editAcc.PasswordHash;
+            user.Email = editAcc.Email;
             userRole.UserId = editAcc.Id;
             //foreach (var item in editAcc.UserRoles)
             //{
